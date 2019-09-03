@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DMActionController" customModule="DMActionController" customModuleProvider="target">
+            <connections>
+                <outlet property="cancelButton" destination="Ewp-nM-OXV" id="yiK-Lr-90M"/>
+                <outlet property="containerView" destination="ugr-ar-QKr" id="ada-Tw-fFh"/>
+                <outlet property="contentStackView" destination="nOp-Wy-T93" id="Rg3-4l-oKF"/>
+                <outlet property="contentView" destination="a6x-ab-Jtv" id="tVH-rd-hjD"/>
+                <outlet property="dragView" destination="kjd-cT-UMw" id="1g0-jX-zeR"/>
+                <outlet property="heightConstraint" destination="9mn-Au-16d" id="iVC-xg-Ok1"/>
+                <outlet property="navigationBar" destination="Hww-lO-WPH" id="9sx-G9-kFo"/>
+                <outlet property="navigationBarHeightConstraint" destination="IPi-Bh-98D" id="HHe-LA-rAy"/>
+                <outlet property="view" destination="iN0-l3-epB" id="EFP-kG-2ZB"/>
+                <outlet property="whiteView" destination="acB-db-3H4" id="862-OS-lKD"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="acB-db-3H4">
+                    <rect key="frame" x="0.0" y="894" width="414" height="2"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="2" id="Do7-Ma-5kM"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" verticalHuggingPriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ugr-ar-QKr" userLabel="Container View">
+                    <rect key="frame" x="0.0" y="83" width="414" height="813"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kjd-cT-UMw" userLabel="Drag View">
+                            <rect key="frame" x="187" y="0.0" width="40" height="5"/>
+                            <color key="backgroundColor" white="0.84999999999999998" alpha="0.79711787564766834" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="40" id="8tb-xr-24J"/>
+                                <constraint firstAttribute="height" constant="5" id="a8x-2C-bh5"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a6x-ab-Jtv" userLabel="Content View">
+                            <rect key="frame" x="0.0" y="13" width="414" height="800"/>
+                            <subviews>
+                                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hww-lO-WPH">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="44" id="IPi-Bh-98D"/>
+                                    </constraints>
+                                    <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <items>
+                                        <navigationItem id="eSh-xl-fLk"/>
+                                    </items>
+                                </navigationBar>
+                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="7ZG-o9-mAa">
+                                    <rect key="frame" x="8" y="44" width="398" height="722"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="nOp-Wy-T93">
+                                            <rect key="frame" x="0.0" y="0.0" width="398" height="722"/>
+                                        </stackView>
+                                        <button hidden="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ewp-nM-OXV" customClass="DMCancelActionButton" customModule="DMActionController" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="398" height="44"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="dhM-TT-XgQ"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                            <state key="normal" title="Cancel">
+                                                <color key="titleColor" red="0.96699999999999997" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="didPressCancel" destination="-1" eventType="touchUpInside" id="q4Q-3m-OA9"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="800" id="9mn-Au-16d"/>
+                                <constraint firstItem="Hww-lO-WPH" firstAttribute="top" secondItem="a6x-ab-Jtv" secondAttribute="top" id="Ana-M0-CR0"/>
+                                <constraint firstItem="7ZG-o9-mAa" firstAttribute="top" secondItem="Hww-lO-WPH" secondAttribute="bottom" id="Jzw-Ca-xK4"/>
+                                <constraint firstItem="7ZG-o9-mAa" firstAttribute="leading" secondItem="a6x-ab-Jtv" secondAttribute="leading" constant="8" id="Ky8-PH-bTj"/>
+                                <constraint firstAttribute="trailing" secondItem="Hww-lO-WPH" secondAttribute="trailing" id="TlN-Zx-EpP"/>
+                                <constraint firstItem="7ZG-o9-mAa" firstAttribute="bottom" secondItem="SZO-AW-EYD" secondAttribute="bottom" id="ef3-XE-uxu"/>
+                                <constraint firstAttribute="trailing" secondItem="7ZG-o9-mAa" secondAttribute="trailing" constant="8" id="kfO-UE-KYx"/>
+                                <constraint firstItem="Hww-lO-WPH" firstAttribute="leading" secondItem="a6x-ab-Jtv" secondAttribute="leading" id="zSK-Nc-dTY"/>
+                            </constraints>
+                            <viewLayoutGuide key="safeArea" id="SZO-AW-EYD"/>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="9mn-Au-16d"/>
+                                </mask>
+                            </variation>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="a6x-ab-Jtv" secondAttribute="trailing" id="7Fd-Az-9lo"/>
+                        <constraint firstAttribute="bottom" secondItem="a6x-ab-Jtv" secondAttribute="bottom" id="BdI-UX-8Nq"/>
+                        <constraint firstItem="kjd-cT-UMw" firstAttribute="top" secondItem="ugr-ar-QKr" secondAttribute="top" id="DKa-XL-DgC"/>
+                        <constraint firstItem="a6x-ab-Jtv" firstAttribute="leading" secondItem="ugr-ar-QKr" secondAttribute="leading" id="LIc-Ap-Vcv"/>
+                        <constraint firstAttribute="height" constant="800" id="fe4-pj-Uk5"/>
+                        <constraint firstItem="a6x-ab-Jtv" firstAttribute="top" secondItem="kjd-cT-UMw" secondAttribute="bottom" constant="8" id="lzn-e4-kGb"/>
+                        <constraint firstItem="kjd-cT-UMw" firstAttribute="centerX" secondItem="ugr-ar-QKr" secondAttribute="centerX" id="n5F-cj-jMK"/>
+                    </constraints>
+                    <viewLayoutGuide key="safeArea" id="I8D-b6-zGu"/>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="fe4-pj-Uk5"/>
+                        </mask>
+                    </variation>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="ugr-ar-QKr" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="08i-Am-v3W"/>
+                <constraint firstItem="ugr-ar-QKr" firstAttribute="top" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="top" id="0hg-Dg-Njg"/>
+                <constraint firstItem="ugr-ar-QKr" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="3Tq-m4-z5Y"/>
+                <constraint firstItem="acB-db-3H4" firstAttribute="leading" secondItem="ugr-ar-QKr" secondAttribute="leading" id="4m9-cK-9xZ"/>
+                <constraint firstAttribute="bottom" secondItem="ugr-ar-QKr" secondAttribute="bottom" id="hRT-oY-kqU"/>
+                <constraint firstAttribute="bottom" secondItem="acB-db-3H4" secondAttribute="bottom" id="jvp-ph-rqE"/>
+                <constraint firstItem="acB-db-3H4" firstAttribute="trailing" secondItem="ugr-ar-QKr" secondAttribute="trailing" id="kPb-T8-bBo"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="47.826086956521742" y="35.491071428571423"/>
+        </view>
+    </objects>
+</document>
