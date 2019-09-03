@@ -1,6 +1,6 @@
 # DMActionController
 
-[![Version](https://img.shields.io/cocoapods/v/DMParallaxHeader.svg?style=flat)](http://cocoapods.org/pods/DMActionController)
+[![Version](https://img.shields.io/cocoapods/v/DMActionController.svg?style=flat)](http://cocoapods.org/pods/DMActionController)
 ![Swift 5.0](https://img.shields.io/badge/Swift-5.0-orange.svg)
 [![Platform](https://img.shields.io/cocoapods/p/DMParallaxHeader.svg?style=flat)](http://cocoapods.org/pods/DMActionController)
 [![License](https://img.shields.io/cocoapods/l/DMParallaxHeader.svg?style=flat)](http://opensource.org/licenses/MIT)
