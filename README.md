@@ -7,11 +7,6 @@
 
 DMActionController is customizable action sheet with an api that is base on UIKit's UIAlertController.
 
-Table Style | Collection Style
------------- | -------------
-![Table1](/Screenshots/screenshot-2.png) | ![Collection1](/Screenshots/screenshot-1.png)
-![Table2](/Screenshots/screenshot-4.png) | ![Collection2](/Screenshots/screenshot-5.png)
-
 ## Usage
 
 If you want to try it, simply run:
@@ -29,6 +24,13 @@ actionSheet.addAction(DMAction(title: "Do Action", style: .default, handler: { _
 }))
 self.present(actionSheet, animated: true, completion: nil)
 ```
+
+## Examples
+
+Table Style   | Collection Style
+------------- | -------------
+![Table1](/Screenshots/Screenshot-2.png) | ![Collection1](/Screenshots/Screenshot-1.png)
+![Table2](/Screenshots/Screenshot-4.png) | ![Collection2](/Screenshots/Screenshot-5.png)
 
 ## Installation
 
