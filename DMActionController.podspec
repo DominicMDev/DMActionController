@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DMActionController'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.swift_version    = '5.0'
   s.summary          = 'A customizable action sheet.'
   s.description      = <<-DESC
