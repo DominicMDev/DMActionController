@@ -35,6 +35,7 @@ class ViewController: UIViewController {
     
     @IBAction func didChangeImages(_ sender: UISwitch) {
         shouldShowImages = sender.isOn
+        collectionButton.isEnabled = sender.isOn
     }
     
     @IBAction func didChangeTitle(_ sender: UISwitch) {

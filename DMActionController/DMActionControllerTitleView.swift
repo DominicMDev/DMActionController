@@ -24,12 +24,12 @@ class DMActionControllerTitleView: UIStackView {
     }
     
     override init(frame: CGRect) {
-        titleLabel = DMAutoHidingLabel(frame: .null)
+        titleLabel = DMAutoHidingLabel(frame: .zero)
         titleLabel.backgroundColor = .clear
         titleLabel.font = .systemFont(ofSize: 17, weight: .semibold)
         titleLabel.textColor = .white
         
-        subtitleLabel = DMAutoHidingLabel(frame: .null)
+        subtitleLabel = DMAutoHidingLabel(frame: .zero)
         subtitleLabel.backgroundColor = .clear
         subtitleLabel.font = .systemFont(ofSize: 13)
         subtitleLabel.textColor = .white
@@ -40,6 +40,7 @@ class DMActionControllerTitleView: UIStackView {
         distribution = .fillProportionally
         addArrangedSubview(titleLabel)
         addArrangedSubview(subtitleLabel)
+        heightAnchor.constraint(equalToConstant: 37).isActive = true
     }
     
     required init(coder: NSCoder) {

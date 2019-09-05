@@ -45,6 +45,7 @@ extension DMActionController: UIViewControllerAnimatedTransitioning, UIViewContr
         actionController.view.center = CGPoint(x: finalFrame.midX, y: finalFrame.midY)
         let dismissedTransform = CGAffineTransform.identity.translatedBy(x: 0, y: UIScreen.main.bounds.height)
         if isPresenting {
+            actionController.view.frame = finalFrame
             containerView.addSubview(actionController.view)
             actionController.view.backgroundColor = .clear
             actionController.containerView.transform = dismissedTransform

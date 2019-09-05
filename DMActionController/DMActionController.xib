@@ -17,7 +17,6 @@
                 <outlet property="contentStackView" destination="nOp-Wy-T93" id="Rg3-4l-oKF"/>
                 <outlet property="contentView" destination="a6x-ab-Jtv" id="tVH-rd-hjD"/>
                 <outlet property="dragView" destination="kjd-cT-UMw" id="1g0-jX-zeR"/>
-                <outlet property="heightConstraint" destination="9mn-Au-16d" id="iVC-xg-Ok1"/>
                 <outlet property="navigationBar" destination="Hww-lO-WPH" id="9sx-G9-kFo"/>
                 <outlet property="navigationBarHeightConstraint" destination="IPi-Bh-98D" id="HHe-LA-rAy"/>
                 <outlet property="view" destination="iN0-l3-epB" id="EFP-kG-2ZB"/>
@@ -85,21 +84,13 @@
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="800" id="9mn-Au-16d"/>
                                 <constraint firstItem="Hww-lO-WPH" firstAttribute="top" secondItem="a6x-ab-Jtv" secondAttribute="top" id="Ana-M0-CR0"/>
                                 <constraint firstItem="7ZG-o9-mAa" firstAttribute="top" secondItem="Hww-lO-WPH" secondAttribute="bottom" id="Jzw-Ca-xK4"/>
                                 <constraint firstItem="7ZG-o9-mAa" firstAttribute="leading" secondItem="a6x-ab-Jtv" secondAttribute="leading" constant="8" id="Ky8-PH-bTj"/>
                                 <constraint firstAttribute="trailing" secondItem="Hww-lO-WPH" secondAttribute="trailing" id="TlN-Zx-EpP"/>
-                                <constraint firstItem="7ZG-o9-mAa" firstAttribute="bottom" secondItem="SZO-AW-EYD" secondAttribute="bottom" id="ef3-XE-uxu"/>
                                 <constraint firstAttribute="trailing" secondItem="7ZG-o9-mAa" secondAttribute="trailing" constant="8" id="kfO-UE-KYx"/>
                                 <constraint firstItem="Hww-lO-WPH" firstAttribute="leading" secondItem="a6x-ab-Jtv" secondAttribute="leading" id="zSK-Nc-dTY"/>
                             </constraints>
-                            <viewLayoutGuide key="safeArea" id="SZO-AW-EYD"/>
-                            <variation key="default">
-                                <mask key="constraints">
-                                    <exclude reference="9mn-Au-16d"/>
-                                </mask>
-                            </variation>
                         </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -108,16 +99,10 @@
                         <constraint firstAttribute="bottom" secondItem="a6x-ab-Jtv" secondAttribute="bottom" id="BdI-UX-8Nq"/>
                         <constraint firstItem="kjd-cT-UMw" firstAttribute="top" secondItem="ugr-ar-QKr" secondAttribute="top" id="DKa-XL-DgC"/>
                         <constraint firstItem="a6x-ab-Jtv" firstAttribute="leading" secondItem="ugr-ar-QKr" secondAttribute="leading" id="LIc-Ap-Vcv"/>
-                        <constraint firstAttribute="height" constant="800" id="fe4-pj-Uk5"/>
                         <constraint firstItem="a6x-ab-Jtv" firstAttribute="top" secondItem="kjd-cT-UMw" secondAttribute="bottom" constant="8" id="lzn-e4-kGb"/>
                         <constraint firstItem="kjd-cT-UMw" firstAttribute="centerX" secondItem="ugr-ar-QKr" secondAttribute="centerX" id="n5F-cj-jMK"/>
                     </constraints>
                     <viewLayoutGuide key="safeArea" id="I8D-b6-zGu"/>
-                    <variation key="default">
-                        <mask key="constraints">
-                            <exclude reference="fe4-pj-Uk5"/>
-                        </mask>
-                    </variation>
                 </view>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -129,6 +114,7 @@
                 <constraint firstAttribute="bottom" secondItem="ugr-ar-QKr" secondAttribute="bottom" id="hRT-oY-kqU"/>
                 <constraint firstAttribute="bottom" secondItem="acB-db-3H4" secondAttribute="bottom" id="jvp-ph-rqE"/>
                 <constraint firstItem="acB-db-3H4" firstAttribute="trailing" secondItem="ugr-ar-QKr" secondAttribute="trailing" id="kPb-T8-bBo"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="7ZG-o9-mAa" secondAttribute="bottom" id="pKI-wH-oHm"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="47.826086956521742" y="35.491071428571423"/>

@@ -77,7 +77,6 @@ public final class DMActionController: UIViewController {
     @IBOutlet weak var contentStackView: UIStackView!
     @IBOutlet weak var cancelButton: DMCancelActionButton!
     @IBOutlet var navigationBarHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var heightConstraint: NSLayoutConstraint!
     
     /*
      *  MARK: - Private Instance Properties
@@ -89,11 +88,7 @@ public final class DMActionController: UIViewController {
     
     private var titleView = DMActionControllerTitleView(frame: .null)
     
-    private lazy var maxContentHeight: CGFloat = {
-        let topSpace: CGFloat = UIApplication.shared.statusBarFrame.size.height + 44
-        return UIScreen.main.bounds.height - topSpace
-    }()
-    
+    private var lastContentBounds: CGRect?
     
     /*
      *  MARK: - Public Instance Properties
@@ -314,7 +309,7 @@ public final class DMActionController: UIViewController {
     private func loadActionViewSections() -> [UIStackView] {
         var sections = [UIStackView]()
         var actionViews = loadActionViews()
-        for _ in 0..<Int(ceil(Double(actions.count)/3)) {
+        for _ in 0..<Int(ceil(Double(_actions.count)/3)) {
             let section = createSectionStack()
             var i = 0
             while (i < 3 && !actionViews.isEmpty) {
@@ -334,6 +329,17 @@ public final class DMActionController: UIViewController {
         stack.distribution = .fillEqually
         stack.spacing = 8
         return stack
+    }
+    
+    /*
+     *  MARK: -
+     */
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard lastContentBounds != contentView.bounds else { return }
+        lastContentBounds = contentView.bounds
+        contentView.maskCorners([.topLeft, .topRight], cornerRadius: 10)
     }
     
     /*
