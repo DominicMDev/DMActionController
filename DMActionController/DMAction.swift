@@ -34,10 +34,15 @@ extension DMAction {
 /// before displaying the corresponding alert to the user.
 open class DMAction: NSObject {
     
+    /// TODO: Document
+    public static var defaultTextColor: UIColor = .black
+    public static var defaultImageTint: UIColor = .black
+    
     private var _title: String?
     private var _image: UIImage?
     private var _style: Style!
     private var _textColor: UIColor? = nil
+    private var _imageTint: UIColor? = nil
     private var handler: ((DMAction) -> Void)?
     
     /// Create and return an action with the specified image, title, and behavior.
@@ -80,21 +85,24 @@ open class DMAction: NSObject {
     /// The color that is applied to title of the action’s button.
     ///
     /// The default value of this property is `UIColor.black`.
-    open var textColor: UIColor! {
-        get { return _textColor ?? .black }
+    @objc dynamic open var textColor: UIColor! {
+        get { return _textColor ?? DMAction.defaultTextColor }
         set { _textColor = newValue }
     }
     
     /// The color that is applied to title of the action’s button.
     ///
-    /// The default value of this property is `nil`.
-    open var imageTint: UIColor? = .none
+    /// The default value of this property is `UIColor.black`.
+    @objc dynamic open var imageTint: UIColor! {
+        get { return _imageTint ?? DMAction.defaultImageTint }
+        set { _imageTint = newValue }
+    }
     
     /// A Boolean value indicating whether the action is currently enabled.
     ///
     /// The default value of this property is true. Changing the value to false causes the action to appear dimmed
     /// in the resulting action view. When an action is disabled, taps on the corresponding button have no effect.
-    open var isEnabled: Bool = true
+    @objc dynamic open var isEnabled: Bool = true
     
 }
 

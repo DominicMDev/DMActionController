@@ -57,13 +57,13 @@ public extension DMActionController {
 /// The `DMActionController` class is intended to be used as-is and does not support subclassing.
 public final class DMActionController: UIViewController {
     
-    private typealias TextAttributes = (font: UIFont, color: UIColor)
+    /// TODO: Document
+    public static var defaultPreferences = Preferences()
     
     public override var modalPresentationStyle: UIModalPresentationStyle {
         get { return .overFullScreen }
         set { }
     }
-    
     
     /*
      *  MARK: - IBOutlets
@@ -88,11 +88,28 @@ public final class DMActionController: UIViewController {
     
     private var titleView = DMActionControllerTitleView(frame: .null)
     
+    private var minTranslation: CGFloat {
+        let statusBarHeight = UIApplication.shared.statusBarFrame.height
+        return (-containerView.originalFrame.origin.y) + preferences.topDraggableInset + statusBarHeight
+    }
+    
+    private var dismissTranslation: CGFloat {
+        let contentHeight = contentView.frame.height
+        var neededOffset = contentHeight - 79
+        if neededOffset < 0 { neededOffset = contentHeight - 44 }
+        return neededOffset
+    }
+    
+    private let dismissVelocity: CGFloat = 1350
+    
     private var lastContentBounds: CGRect?
     
     /*
      *  MARK: - Public Instance Properties
      */
+    
+    /// TODO: Document
+    public var preferences = DMActionController.defaultPreferences
     
     /// The title of the alert.
     ///
@@ -118,13 +135,21 @@ public final class DMActionController: UIViewController {
     /// If `true`, when the user taps on the background,
     /// the controller will be dismissed and the cancel action will occur.
     /// The default value of this property is `true`.
-    public var tapBackgroundToDismiss: Bool = true
+    @available(*, deprecated, renamed: "preferences.tapBackgroundToDismiss")
+    public var tapBackgroundToDismiss: Bool {
+        get { return preferences.tapBackgroundToDismiss }
+        set { preferences.tapBackgroundToDismiss = newValue }
+    }
     
     /// Specifies if dragging the view downward will act as though the user tapped on the cancel button.
     /// If `true`, when the user drags the view far enough downward and releases,
     /// the controller will be dismissed and the cancel action will occur.
     /// The default value of this property is `true`.
-    public var canDragToDismiss: Bool = true
+    @available(*, deprecated, renamed: "preferences.dragToDismiss")
+    public var canDragToDismiss: Bool {
+        get { return preferences.dragToDismiss }
+        set { preferences.dragToDismiss = newValue }
+    }
     
     /// The actions that the user can take in response to the action sheet.
     /// The actions are in the order in which you added them to the action controller.
@@ -201,8 +226,8 @@ public final class DMActionController: UIViewController {
     
     private func setUpContentView() {
         dragView.layer.cornerRadius = 3
-        contentView.maskCorners([.topLeft, .topRight], cornerRadius: 10)
-        contentView.backgroundColor = .white
+        contentView.maskCorners([.topLeft, .topRight], cornerRadius: preferences.sheetCornerRadius)
+        contentView.backgroundColor = preferences.sheetColor
         let pan = UIPanGestureRecognizer(target: self, action: #selector(draggedView(_:)))
         containerView.addGestureRecognizer(pan)
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
@@ -211,23 +236,14 @@ public final class DMActionController: UIViewController {
     }
     
     private func setUpNavBar() {
-        setUpCloseButtonItem()
-        if shouldShowNavBar() {
-            navigationBar.shadowImage = nil
-            navigationBar.barTintColor = .white
-            navigationBar.backgroundColor = .white
-            navigationBar.tintColor = .black
-            navigationBar.barStyle = .default
-            navigationBarHeightConstraint.constant = 44
-            navigationBar.setItems([navigationItem], animated: false)
-        } else {
-            navigationBar.isHidden = true
-            navigationBarHeightConstraint.constant = 0
-        }
+        navigationBar.shadowImage = nil
+        navigationBar.barStyle = .default
+        navigationBar.setItems([navigationItem], animated: false)
+        updateNavBar()
     }
     
     private func setUpCloseButtonItem() {
-        if cancelAction == nil {
+        if preferences.alwaysShowCloseButton && cancelAction == nil {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop,
                                                                target: self,
                                                                action: #selector(didPressCancel))
@@ -241,30 +257,11 @@ public final class DMActionController: UIViewController {
     }
     
     private func setUpTitleView() {
-        let (titleAttributes, messageAttributes) = getTitleViewAttributes()
-        titleView.titleLabel.font = titleAttributes.font
-        titleView.titleLabel.textColor = titleAttributes.color
-        titleView.subtitleLabel.font = messageAttributes.font
-        titleView.subtitleLabel.textColor = messageAttributes.color
+        titleView.titleLabel.font = preferences.titleFont
+        titleView.titleLabel.textColor = preferences.titleColor
+        titleView.subtitleLabel.font = preferences.messageFont
+        titleView.subtitleLabel.textColor = preferences.messageColor
         navigationItem.titleView = titleView
-    }
-    
-    private func getTitleViewAttributes() -> (title: TextAttributes, message: TextAttributes) {
-        var titleFont: UIFont = .systemFont(ofSize: 17, weight: .semibold)
-        var titleColor: UIColor = .black
-        var messageFont: UIFont = .systemFont(ofSize: 12, weight: .regular)
-        var messageColor: UIColor = .darkGray
-        if let attributes = navigationBar.titleTextAttributes {
-            if let font = attributes[.font] as? UIFont {
-                titleFont = font
-                messageFont = font.withRegularWeightAddingSize(-5)
-            }
-            if let color = attributes[.foregroundColor] as? UIColor {
-                titleColor = color
-                messageColor = color.withAlphaComponent(0.6667)
-            }
-        }
-        return ((titleFont, titleColor), (messageFont, messageColor))
     }
     
     /*
@@ -279,6 +276,9 @@ public final class DMActionController: UIViewController {
     
     private func updateNavBar() {
         setUpCloseButtonItem()
+        navigationBar.barTintColor = preferences.sheetColor
+        navigationBar.backgroundColor = preferences.sheetColor
+        navigationBar.tintColor = preferences.sheetAccessoryColor
         if shouldShowNavBar() {
             navigationBar.isHidden = false
             navigationBarHeightConstraint.constant = 44
@@ -303,7 +303,9 @@ public final class DMActionController: UIViewController {
     }
     
     private func loadActionViews() -> [DMActionView] {
-        return _actions.map({ DMActionView($0, style: preferredStyle, delegate: self) })
+        return _actions.map {
+            DMActionView($0, style: preferredStyle, tableCellHeight: preferences.tableCellHeight, delegate: self)
+        }
     }
     
     private func loadActionViewSections() -> [UIStackView] {
@@ -339,7 +341,7 @@ public final class DMActionController: UIViewController {
         super.viewDidLayoutSubviews()
         guard lastContentBounds != contentView.bounds else { return }
         lastContentBounds = contentView.bounds
-        contentView.maskCorners([.topLeft, .topRight], cornerRadius: 10)
+        contentView.maskCorners([.topLeft, .topRight], cornerRadius: preferences.sheetCornerRadius)
     }
     
     /*
@@ -347,7 +349,7 @@ public final class DMActionController: UIViewController {
      */
     
     @objc private func didTapBackground() {
-        guard tapBackgroundToDismiss else { return }
+        guard preferences.tapBackgroundToDismiss else { return }
         didPressCancel()
     }
     
@@ -356,26 +358,28 @@ public final class DMActionController: UIViewController {
     }
     
     @objc private func draggedView(_ sender: UIPanGestureRecognizer) {
-        let translation = sender.translation(in: self.view)
+        let translation = sender.translation(in: self.view).y
+        let velocity = sender.velocity(in: self.view).y
         switch sender.state {
         case .cancelled, .failed, .ended:
-            if canDragToDismiss, translation.y > 174 {
+            if preferences.dragToDismiss, (translation > dismissTranslation || velocity > dismissVelocity) {
                 didPressCancel()
             } else {
                 resetTransform()
             }
             
         default:
-            containerView.transform = CGAffineTransform.identity.translatedBy(x: 0, y: translation.y)
-            guard translation.y < 0 else { return }
-            whiteView.transform = CGAffineTransform.identity.scaledBy(x: 1, y: -translation.y)
+            let translation = max(translation, minTranslation)
+            containerView.transform = CGAffineTransform.identity.translatedBy(x: 0, y: translation)
+            guard translation < 0 else { return }
+            whiteView.transform = CGAffineTransform.identity.scaledBy(x: 1, y: -translation)
         }
+        
     }
     
     private func resetTransform() {
-        UIView.animate(withDuration: 0.7, delay: 0,
-                       usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5,
-                       options: .layoutSubviews, animations: {
+        UIView.animate(withDuration: 0.4, delay: 0,
+                       options: [.layoutSubviews, .curveEaseInOut], animations: {
                         self.containerView.transform = .identity
                         self.whiteView.transform = .identity
         }, completion: nil)

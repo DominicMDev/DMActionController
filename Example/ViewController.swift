@@ -12,6 +12,8 @@ import DMActionController
 
 class ViewController: UIViewController {
     
+    var actionImages: [UIImage] = []
+    
     var numberOfActions: Int = 5
     var shouldShowTitle = true
     var shouldShowMessage = true
@@ -21,8 +23,20 @@ class ViewController: UIViewController {
     var shouldDragViewToDismiss = true
     
     @IBOutlet weak var collectionButton: UIButton!
-    
     @IBOutlet weak var numberOfActionsLabel: UILabel!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        for i in 1...5 {
+            let image = UIImage(
+                named: "icon-\(i)",
+                in: Bundle(for: ViewController.self),
+                compatibleWith: nil
+                )!
+                .withRenderingMode(.alwaysTemplate)
+            actionImages.append(image)
+        }
+    }
     
     @IBAction func didChangeNumberOfActions(_ sender: UISlider) {
         numberOfActions = Int(sender.value.rounded())
@@ -55,32 +69,28 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didPressTable() {
-        let title = shouldShowTitle ? "Action Sheet" : nil
-        let message = shouldShowMessage ? "Select an action" : nil
-        let table = DMActionController(title: title,
-                                       message: message,
-                                       preferredStyle: .table)
-        addActions(to: table)
-        table.tapBackgroundToDismiss = shouldTapBackgroundToDismiss
-        table.canDragToDismiss = shouldDragViewToDismiss
-        present(table, animated: true, completion: nil)
+        presentActionController(style: .table)
     }
     
     @IBAction func didPressCollection() {
+        presentActionController(style: .collection)
+    }
+    
+    private func presentActionController(style: DMActionController.Style) {
         let title = shouldShowTitle ? "Action Sheet" : nil
         let message = shouldShowMessage ? "Select an action" : nil
-        let collection = DMActionController(title: title,
-                                            message: message,
-                                            preferredStyle: .collection)
-        addActions(to: collection)
-        collection.tapBackgroundToDismiss = shouldTapBackgroundToDismiss
-        collection.canDragToDismiss = shouldDragViewToDismiss
-        present(collection, animated: true, completion: nil)
+        let sheet = DMActionController(title: title, message: message, preferredStyle: style)
+        sheet.preferences.tapBackgroundToDismiss = shouldTapBackgroundToDismiss
+        sheet.preferences.dragToDismiss = shouldDragViewToDismiss
+        addActions(to: sheet)
+        present(sheet, animated: true)
     }
     
     private func addActions(to sheet: DMActionController) {
         for i in 1...numberOfActions {
-            let image = shouldShowImages ? UIImage(named: "icon-\(i)", in: Bundle(for: ViewController.self), compatibleWith: nil) : nil
+            var im = i - 1
+            while im > 4 { im -= 5 }
+            let image = shouldShowImages ? actionImages[im] : nil
             sheet.addAction(DMAction(image: image, title: "Action \(i)", style: .default))
         }
         if shouldShowCancelButton {
@@ -89,4 +99,3 @@ class ViewController: UIViewController {
     }
     
 }
-

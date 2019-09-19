@@ -14,7 +14,9 @@ protocol DMActionViewDelegate: class {
 
 class DMActionView: UIStackView {
     
-    private(set) var action: DMAction
+    @objc let action: DMAction
+    
+    private var observer: DMActionObserver?
     
     var imageView: UIImageView!
     var titleLabel: UILabel!
@@ -25,11 +27,12 @@ class DMActionView: UIStackView {
     
     weak var delegate: DMActionViewDelegate?
     
-    init(_ action: DMAction, style: DMActionController.Style, delegate: DMActionViewDelegate? = nil) {
+    init(_ action: DMAction, style: DMActionController.Style,
+         tableCellHeight: CGFloat, delegate: DMActionViewDelegate? = nil) {
         self.action = action
         super.init(frame: .null)
         switch style {
-        case .table: initAsTableCell()
+        case .table: initAsTableCell(withHeight: tableCellHeight)
         case .collection: initAsCollectionCell()
         }
         self.delegate = delegate
@@ -39,13 +42,13 @@ class DMActionView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func initAsTableCell() {
+    private func initAsTableCell(withHeight height: CGFloat) {
         commonInit()
         self.axis = .horizontal
         self.spacing = 8
         
         self.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 16).isActive = true
-        self.heightAnchor.constraint(equalToConstant: 56).isActive = true
+        self.heightAnchor.constraint(equalToConstant: height).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
         imageView.backgroundColor = .white
@@ -108,9 +111,7 @@ class DMActionView: UIStackView {
         self.distribution = .fill
         
         imageView = UIImageView(frame: frame)
-        if let color = action.imageTint {
-            imageView.tintColor = color
-        }
+        imageView.tintColor = action.imageTint
         
         titleLabel = UILabel(frame: frame)
         titleLabel.font = .systemFont(ofSize: 13)
@@ -119,6 +120,23 @@ class DMActionView: UIStackView {
         imageView.image = action.image
         titleLabel.text = action.title
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
+        observer = DMActionObserver(action, on: self)
+    }
+    
+    func updateImageTint() {
+        imageView.tintColor = action.imageTint
+    }
+    
+    func updateTextColor() {
+        UIView.transition(
+            with: self.titleLabel,
+            duration: UIView.inheritedAnimationDuration,
+            options: [.transitionCrossDissolve, .allowAnimatedContent, .beginFromCurrentState],
+            animations: { [weak self] in
+                guard let self = self else { return }
+                self.titleLabel.textColor = self.action.textColor
+            }
+        )
     }
     
     override func layoutSubviews() {
@@ -126,7 +144,7 @@ class DMActionView: UIStackView {
         updateViewAlphas()
     }
     
-    private func updateViewAlphas() {
+    func updateViewAlphas() {
         if action.isEnabled {
             if isHighlighted {
                 imageView.alpha = 0.6

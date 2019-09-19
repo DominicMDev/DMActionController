@@ -38,7 +38,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ga9-ur-c8n">
                                         <rect key="frame" x="0.0" y="0.0" width="285" height="80"/>
                                         <subviews>
-                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="1" maxValue="5" translatesAutoresizingMaskIntoConstraints="NO" id="eMX-Eb-2kn">
+                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="1" maxValue="12" translatesAutoresizingMaskIntoConstraints="NO" id="eMX-Eb-2kn">
                                                 <rect key="frame" x="-2" y="26" width="289" height="45"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="sRQ-MP-AiZ"/>
@@ -53,10 +53,10 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3qg-F6-DRD">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="5" textAlignment="center" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3qg-F6-DRD">
                                                 <rect key="frame" x="257" y="3" width="28" height="20.5"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="28" id="uzW-i2-3Bk"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="28" id="uzW-i2-3Bk"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
@@ -200,7 +200,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="137.68115942028987" y="89.732142857142847"/>
+            <point key="canvasLocation" x="136.875" y="88.732394366197184"/>
         </scene>
     </scenes>
 </document>

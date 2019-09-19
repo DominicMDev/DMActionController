@@ -41,6 +41,11 @@ class DMActionControllerTitleView: UIStackView {
         addArrangedSubview(titleLabel)
         addArrangedSubview(subtitleLabel)
         heightAnchor.constraint(equalToConstant: 37).isActive = true
+        
+        titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 21).isActive = true
+        titleLabel.adjustsFontSizeToFitWidth = true
+        subtitleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 15).isActive = true
+        subtitleLabel.adjustsFontSizeToFitWidth = true
     }
     
     required init(coder: NSCoder) {
