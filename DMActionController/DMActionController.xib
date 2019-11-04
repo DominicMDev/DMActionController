@@ -35,8 +35,8 @@
                         <constraint firstAttribute="height" constant="2" id="Do7-Ma-5kM"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" verticalHuggingPriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ugr-ar-QKr" userLabel="Container View">
-                    <rect key="frame" x="0.0" y="83" width="414" height="813"/>
+                <view contentMode="scaleToFill" verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="ugr-ar-QKr" userLabel="Container View">
+                    <rect key="frame" x="0.0" y="44" width="414" height="852"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kjd-cT-UMw" userLabel="Drag View">
                             <rect key="frame" x="187" y="0.0" width="40" height="5"/>
@@ -46,8 +46,8 @@
                                 <constraint firstAttribute="height" constant="5" id="a8x-2C-bh5"/>
                             </constraints>
                         </view>
-                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a6x-ab-Jtv" userLabel="Content View">
-                            <rect key="frame" x="0.0" y="13" width="414" height="800"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a6x-ab-Jtv" userLabel="Content View">
+                            <rect key="frame" x="0.0" y="13" width="414" height="839"/>
                             <subviews>
                                 <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hww-lO-WPH">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -59,11 +59,11 @@
                                         <navigationItem id="eSh-xl-fLk"/>
                                     </items>
                                 </navigationBar>
-                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="7ZG-o9-mAa">
-                                    <rect key="frame" x="8" y="44" width="398" height="722"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="7ZG-o9-mAa">
+                                    <rect key="frame" x="8" y="44" width="398" height="761"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="nOp-Wy-T93">
-                                            <rect key="frame" x="0.0" y="0.0" width="398" height="722"/>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="nOp-Wy-T93">
+                                            <rect key="frame" x="0.0" y="0.0" width="398" height="761"/>
                                         </stackView>
                                         <button hidden="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ewp-nM-OXV" customClass="DMCancelActionButton" customModule="DMActionController" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="398" height="44"/>
@@ -111,6 +111,7 @@
                 <constraint firstItem="ugr-ar-QKr" firstAttribute="top" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="top" id="0hg-Dg-Njg"/>
                 <constraint firstItem="ugr-ar-QKr" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="3Tq-m4-z5Y"/>
                 <constraint firstItem="acB-db-3H4" firstAttribute="leading" secondItem="ugr-ar-QKr" secondAttribute="leading" id="4m9-cK-9xZ"/>
+                <constraint firstItem="ugr-ar-QKr" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" placeholder="YES" id="50t-Hj-gpK"/>
                 <constraint firstAttribute="bottom" secondItem="ugr-ar-QKr" secondAttribute="bottom" id="hRT-oY-kqU"/>
                 <constraint firstAttribute="bottom" secondItem="acB-db-3H4" secondAttribute="bottom" id="jvp-ph-rqE"/>
                 <constraint firstItem="acB-db-3H4" firstAttribute="trailing" secondItem="ugr-ar-QKr" secondAttribute="trailing" id="kPb-T8-bBo"/>

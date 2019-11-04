@@ -359,7 +359,8 @@ public final class DMActionController: UIViewController {
         let translation = sender.translation(in: self.view)
         switch sender.state {
         case .cancelled, .failed, .ended:
-            if canDragToDismiss, translation.y > 174 {
+            let neededOffset = ((29/72) * containerView.frame.height)
+            if canDragToDismiss, translation.y > neededOffset {
                 didPressCancel()
             } else {
                 resetTransform()

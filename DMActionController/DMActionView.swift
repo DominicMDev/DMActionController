@@ -119,6 +119,9 @@ class DMActionView: UIStackView {
         imageView.image = action.image
         titleLabel.text = action.title
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
+        action.didUpdateIsEnabled = { [weak self] _ in
+            self?.updateViewAlphas()
+        }
     }
     
     override func layoutSubviews() {

@@ -39,6 +39,7 @@ open class DMAction: NSObject {
     private var _style: Style!
     private var _textColor: UIColor? = nil
     private var handler: ((DMAction) -> Void)?
+    internal var didUpdateIsEnabled: ((Bool) -> Void)?
     
     /// Create and return an action with the specified image, title, and behavior.
     ///
@@ -85,7 +86,7 @@ open class DMAction: NSObject {
         set { _textColor = newValue }
     }
     
-    /// The color that is applied to title of the action’s button.
+    /// The color that is applied to image of the action’s button.
     ///
     /// The default value of this property is `nil`.
     open var imageTint: UIColor? = .none
@@ -94,7 +95,9 @@ open class DMAction: NSObject {
     ///
     /// The default value of this property is true. Changing the value to false causes the action to appear dimmed
     /// in the resulting action view. When an action is disabled, taps on the corresponding button have no effect.
-    open var isEnabled: Bool = true
+    open var isEnabled: Bool = true {
+        didSet { didUpdateIsEnabled?(isEnabled) }
+    }
     
 }
 
