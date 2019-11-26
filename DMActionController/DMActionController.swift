@@ -57,13 +57,16 @@ public extension DMActionController {
 /// The `DMActionController` class is intended to be used as-is and does not support subclassing.
 public final class DMActionController: UIViewController {
     
-    private typealias TextAttributes = (font: UIFont, color: UIColor)
+    public static func appearance() -> DMActionControllerAppearance {
+        return .shared
+    }
     
     public override var modalPresentationStyle: UIModalPresentationStyle {
         get { return .overFullScreen }
         set { }
     }
     
+    public var appearance: DMActionControllerAppearance = .copy()
     
     /*
      *  MARK: - IBOutlets
@@ -77,6 +80,7 @@ public final class DMActionController: UIViewController {
     @IBOutlet weak var contentStackView: UIStackView!
     @IBOutlet weak var cancelButton: DMCancelActionButton!
     @IBOutlet var navigationBarHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var dragViewWidthConstraint: NSLayoutConstraint!
     
     /*
      *  MARK: - Private Instance Properties
@@ -86,7 +90,7 @@ public final class DMActionController: UIViewController {
     
     private var cancelAction: DMAction? = nil
     
-    private var titleView = DMActionControllerTitleView(frame: .null)
+    private lazy var titleView = DMActionControllerTitleView(appearance: appearance)
     
     private var lastContentBounds: CGRect?
     
@@ -196,13 +200,11 @@ public final class DMActionController: UIViewController {
         view.isOpaque = false
         setUpContentView()
         setUpNavBar()
-        setUpTitleView()
+        navigationItem.titleView = titleView
     }
     
     private func setUpContentView() {
-        dragView.layer.cornerRadius = 3
-        contentView.maskCorners([.topLeft, .topRight], cornerRadius: 10)
-        contentView.backgroundColor = .white
+        updateContentAppearance()
         let pan = UIPanGestureRecognizer(target: self, action: #selector(draggedView(_:)))
         containerView.addGestureRecognizer(pan)
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
@@ -210,13 +212,22 @@ public final class DMActionController: UIViewController {
         view?.addGestureRecognizer(tap)
     }
     
+    private func updateContentAppearance() {
+        dragView.backgroundColor = appearance.dragViewColor
+        dragView.layer.cornerRadius = appearance.dragViewCornerRadius
+        dragViewWidthConstraint.constant = appearance.dragViewWidth
+        if appearance.cornerRadius > 0 {
+            contentView.maskCorners([.topLeft, .topRight], cornerRadius: appearance.cornerRadius)
+        }
+        contentView.backgroundColor = appearance.backgroundColor
+        whiteView.backgroundColor = appearance.backgroundColor
+    }
+    
     private func setUpNavBar() {
         setUpCloseButtonItem()
         if shouldShowNavBar() {
             navigationBar.shadowImage = nil
-            navigationBar.barTintColor = .white
-            navigationBar.backgroundColor = .white
-            navigationBar.tintColor = .black
+            updateNavBarAppearance()
             navigationBar.barStyle = .default
             navigationBarHeightConstraint.constant = 44
             navigationBar.setItems([navigationItem], animated: false)
@@ -240,31 +251,10 @@ public final class DMActionController: UIViewController {
         return !title.isNilOrEmpty || !message.isNilOrEmpty || cancelAction == nil
     }
     
-    private func setUpTitleView() {
-        let (titleAttributes, messageAttributes) = getTitleViewAttributes()
-        titleView.titleLabel.font = titleAttributes.font
-        titleView.titleLabel.textColor = titleAttributes.color
-        titleView.subtitleLabel.font = messageAttributes.font
-        titleView.subtitleLabel.textColor = messageAttributes.color
-        navigationItem.titleView = titleView
-    }
-    
-    private func getTitleViewAttributes() -> (title: TextAttributes, message: TextAttributes) {
-        var titleFont: UIFont = .systemFont(ofSize: 17, weight: .semibold)
-        var titleColor: UIColor = .black
-        var messageFont: UIFont = .systemFont(ofSize: 12, weight: .regular)
-        var messageColor: UIColor = .darkGray
-        if let attributes = navigationBar.titleTextAttributes {
-            if let font = attributes[.font] as? UIFont {
-                titleFont = font
-                messageFont = font.withRegularWeightAddingSize(-5)
-            }
-            if let color = attributes[.foregroundColor] as? UIColor {
-                titleColor = color
-                messageColor = color.withAlphaComponent(0.6667)
-            }
-        }
-        return ((titleFont, titleColor), (messageFont, messageColor))
+    private func updateNavBarAppearance() {
+        navigationBar.barTintColor = appearance.backgroundColor
+        navigationBar.backgroundColor = appearance.backgroundColor
+        navigationBar.tintColor = appearance.tintColor
     }
     
     /*
@@ -273,6 +263,7 @@ public final class DMActionController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        updateContentAppearance()
         updateNavBar()
         loadViews()
     }
@@ -280,6 +271,7 @@ public final class DMActionController: UIViewController {
     private func updateNavBar() {
         setUpCloseButtonItem()
         if shouldShowNavBar() {
+            updateNavBarAppearance()
             navigationBar.isHidden = false
             navigationBarHeightConstraint.constant = 44
         } else {
@@ -339,7 +331,9 @@ public final class DMActionController: UIViewController {
         super.viewDidLayoutSubviews()
         guard lastContentBounds != contentView.bounds else { return }
         lastContentBounds = contentView.bounds
-        contentView.maskCorners([.topLeft, .topRight], cornerRadius: 10)
+        if appearance.cornerRadius > 0 {
+            contentView.maskCorners([.topLeft, .topRight], cornerRadius: appearance.cornerRadius)
+        }
     }
     
     /*

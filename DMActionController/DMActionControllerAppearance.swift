@@ -13,6 +13,10 @@ public class DMActionControllerAppearance {
     
     internal static let shared = DMActionControllerAppearance()
     
+    internal static func copy() -> DMActionControllerAppearance {
+        return DMActionControllerAppearance(copy: shared)
+    }
+    
     // MARK: - NavBar
     private let __titleTextAttributes: [NSAttributedString.Key : Any] = [
         .font: UIFont.systemFont(ofSize: 13),
@@ -35,6 +39,14 @@ public class DMActionControllerAppearance {
     public var messageTextAttributes: [NSAttributedString.Key : Any] {
         get { _messageTextAttributes ?? __messageTextAttributes }
         set { _messageTextAttributes = newValue }
+    }
+    
+    internal var tintColor: UIColor {
+        if let color = titleTextAttributes[.foregroundColor] as? UIColor {
+            return color
+        } else {
+            return .black
+        }
     }
     
     
@@ -63,7 +75,7 @@ public class DMActionControllerAppearance {
         set { _cornerRadius = newValue }
     }
     
-    private var __dragViewColor: UIColor = UIColor(white: 0.85, alpha: 0.8)
+    private let __dragViewColor: UIColor = UIColor(white: 0.85, alpha: 0.8)
     private var _dragViewColor: UIColor? = nil
     
     /// The color of the drag view above the content
@@ -95,51 +107,113 @@ public class DMActionControllerAppearance {
         set { _dragViewCornerRadius = newValue }
     }
     
-    // MARK: - Actions
+    // MARK: - Object Lifecycle
     
-    private let _defaultActionTextAttributes: [NSAttributedString.Key : Any] = [
+    init() {}
+    
+    init(copy: DMActionControllerAppearance) {
+        _titleTextAttributes = copy._titleTextAttributes
+        _messageTextAttributes = copy._messageTextAttributes
+        _backgroundColor = copy._backgroundColor
+        _cornerRadius = copy._cornerRadius
+        _dragViewColor = copy._dragViewColor
+        _dragViewWidth = copy._dragViewWidth
+        _dragViewCornerRadius = copy._dragViewCornerRadius
+    }
+    
+}
+
+
+
+public class DMActionAppearance {
+    
+    internal static let shared = DMActionAppearance()
+    
+    internal static func copy() -> DMActionAppearance {
+        return DMActionAppearance(copy: shared)
+    }
+    
+    private var _backgroundColor: UIColor? = .white
+    
+    /// The background color of the action content.
+    public var backgroundColor: UIColor! {
+        get { _backgroundColor ?? .white }
+        set { _backgroundColor = newValue }
+    }
+    
+    private let _defaultTextAttributes: [NSAttributedString.Key : Any] = [
         .font: UIFont.systemFont(ofSize: 13),
         .foregroundColor: UIColor.black
     ]
     
-    private let _cancelActionTextAttributes: [NSAttributedString.Key : Any] = [
+    private let _cancelTextAttributes: [NSAttributedString.Key : Any] = [
         .font: UIFont.systemFont(ofSize: 15, weight: .medium),
         .foregroundColor: UIColor.black
     ]
     
-    private var defaultActionTextAttributes: [NSAttributedString.Key : Any]? = nil
-    private var cancelActionTextAttributes: [NSAttributedString.Key : Any]? = nil
+    private var defaultTextAttributes: [NSAttributedString.Key : Any]? = nil
+    private var cancelTextAttributes: [NSAttributedString.Key : Any]? = nil
     
-    public func setActionTextAttributes(_ attributes: [NSAttributedString.Key : Any]?,
-                                        forStyle style: DMAction.Style) {
+    /// <#Description#>
+    /// - Parameters:
+    ///   - attributes: <#attributes description#>
+    ///   - style: <#style description#>
+    public func setTextAttributes(_ attributes: [NSAttributedString.Key : Any]?,
+                                  forStyle style: DMAction.Style) {
         switch style {
-        case .default: defaultActionTextAttributes = attributes
-        case .cancel: cancelActionTextAttributes = attributes
+        case .default: defaultTextAttributes = attributes
+        case .cancel: cancelTextAttributes = attributes
         }
     }
     
-    public func actionTextAttributes(forStyle style: DMAction.Style) -> [NSAttributedString.Key : Any] {
+    /// <#Description#>
+    /// - Parameter style: <#style description#>
+    public func textAttributes(forStyle style: DMAction.Style) -> [NSAttributedString.Key : Any] {
         switch style {
-        case .default: return defaultActionTextAttributes ?? _defaultActionTextAttributes
-        case .cancel: return cancelActionTextAttributes ?? _cancelActionTextAttributes
+        case .default: return defaultTextAttributes ?? _defaultTextAttributes
+        case .cancel: return cancelTextAttributes ?? _cancelTextAttributes
         }
     }
     
-    private var defaultActionImageTint: UIColor? = nil
-    private var cancelActionImageTint: UIColor? = nil
-    
-    public func setActionImageTint(_ color: UIColor?, forStyle style: DMAction.Style) {
-        switch style {
-        case .default: defaultActionImageTint = color
-        case .cancel: cancelActionImageTint = color
+    internal func textColor(forStyle style: DMAction.Style) -> UIColor {
+        let attributes = textAttributes(forStyle: style)
+        if let color = attributes[.foregroundColor] as? UIColor {
+            return color
+        } else {
+            return .black
         }
     }
     
-    public func actionImageTint(forStyle style: DMAction.Style) -> UIColor? {
+    private var defaultImageTint: UIColor? = nil
+    private var cancelImageTint: UIColor? = nil
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - color: <#color description#>
+    ///   - style: <#style description#>
+    public func setImageTint(_ color: UIColor?, forStyle style: DMAction.Style) {
         switch style {
-        case .default: return defaultActionImageTint
-        case .cancel: return cancelActionImageTint
+        case .default: defaultImageTint = color
+        case .cancel: cancelImageTint = color
         }
+    }
+    
+    /// <#Description#>
+    /// - Parameter style: <#style description#>
+    public func imageTint(forStyle style: DMAction.Style) -> UIColor? {
+        switch style {
+        case .default: return defaultImageTint
+        case .cancel: return cancelImageTint
+        }
+    }
+    
+    init() {}
+    
+    init(copy: DMActionAppearance) {
+        defaultTextAttributes = copy.defaultTextAttributes
+        cancelTextAttributes = copy.cancelTextAttributes
+        defaultImageTint = copy.defaultImageTint
+        cancelImageTint = copy.cancelImageTint
     }
     
 }

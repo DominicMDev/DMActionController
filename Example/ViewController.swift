@@ -60,10 +60,13 @@ class ViewController: UIViewController {
         let table = DMActionController(title: title,
                                        message: message,
                                        preferredStyle: .table)
-        addActions(to: table)
+        let disabled = addActions(to: table)
         table.tapBackgroundToDismiss = shouldTapBackgroundToDismiss
         table.canDragToDismiss = shouldDragViewToDismiss
         present(table, animated: true, completion: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            disabled?.isEnabled = true
+        }
     }
     
     @IBAction func didPressCollection() {
@@ -72,20 +75,37 @@ class ViewController: UIViewController {
         let collection = DMActionController(title: title,
                                             message: message,
                                             preferredStyle: .collection)
-        addActions(to: collection)
+        let disabled = addActions(to: collection)
         collection.tapBackgroundToDismiss = shouldTapBackgroundToDismiss
         collection.canDragToDismiss = shouldDragViewToDismiss
         present(collection, animated: true, completion: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            disabled?.isEnabled = true
+        }
     }
     
-    private func addActions(to sheet: DMActionController) {
+    @discardableResult
+    private func addActions(to sheet: DMActionController) -> DMAction? {
+        var disabled: DMAction?
         for i in 1...numberOfActions {
             let image = shouldShowImages ? UIImage(named: "icon-\(i)", in: Bundle(for: ViewController.self), compatibleWith: nil) : nil
-            sheet.addAction(DMAction(image: image, title: "Action \(i)", style: .default))
+            let action = DMAction(image: image, title: "Action \(i)", style: .default)
+            sheet.addAction(action)
+            if i == 2 {
+                action.isEnabled = false
+                disabled = action
+            }
         }
         if shouldShowCancelButton {
             sheet.addAction(DMAction(title: "Cancel", style: .cancel))
         }
+        return disabled
+    }
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
     }
     
 }

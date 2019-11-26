@@ -108,16 +108,12 @@ class DMActionView: UIStackView {
         self.distribution = .fill
         
         imageView = UIImageView(frame: frame)
-        if let color = action.imageTint {
-            imageView.tintColor = color
-        }
+        if let color = action.imageTint { imageView.tintColor = color }
+        imageView.image = action.image
         
         titleLabel = UILabel(frame: frame)
-        titleLabel.font = .systemFont(ofSize: 13)
-        titleLabel.textColor = action.textColor
+        titleLabel.attributedText = action.attributedText
         
-        imageView.image = action.image
-        titleLabel.text = action.title
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
         action.didUpdateIsEnabled = { [weak self] _ in
             self?.updateViewAlphas()

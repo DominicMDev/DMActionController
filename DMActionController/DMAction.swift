@@ -34,12 +34,26 @@ extension DMAction {
 /// before displaying the corresponding alert to the user.
 open class DMAction: NSObject {
     
+    public static func appearance() -> DMActionAppearance {
+        return .shared
+    }
+    
+    internal var appearance: DMActionAppearance { .shared }
+    
     private var _title: String?
     private var _image: UIImage?
     private var _style: Style!
     private var _textColor: UIColor? = nil
+    private var _imageTint: UIColor? = nil
     private var handler: ((DMAction) -> Void)?
     internal var didUpdateIsEnabled: ((Bool) -> Void)?
+    
+    internal var attributedText: NSAttributedString {
+        var attributes = appearance.textAttributes(forStyle: style)
+        if let color = _textColor { attributes[.foregroundColor] = color }
+        let text = title ?? ((style == .cancel) ? "Cancel" : "")
+        return NSAttributedString(string: text, attributes: attributes)
+    }
     
     /// Create and return an action with the specified image, title, and behavior.
     ///
@@ -82,14 +96,17 @@ open class DMAction: NSObject {
     ///
     /// The default value of this property is `UIColor.black`.
     open var textColor: UIColor! {
-        get { return _textColor ?? .black }
+        get { return _textColor ?? appearance.textColor(forStyle: style) }
         set { _textColor = newValue }
     }
     
     /// The color that is applied to image of the action’s button.
     ///
     /// The default value of this property is `nil`.
-    open var imageTint: UIColor? = .none
+    open var imageTint: UIColor! {
+        get { return _imageTint ?? appearance.imageTint(forStyle: style) }
+        set { _imageTint = newValue }
+    }
     
     /// A Boolean value indicating whether the action is currently enabled.
     ///

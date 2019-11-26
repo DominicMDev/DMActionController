@@ -13,28 +13,43 @@ class DMActionControllerTitleView: UIStackView {
     var titleLabel: DMAutoHidingLabel
     var subtitleLabel: DMAutoHidingLabel
     
+    private var appearance: DMActionControllerAppearance
+    
     var title: String? {
         get { return titleLabel.text }
-        set { titleLabel.text = newValue }
+        set {
+            if let newValue = newValue {
+                titleLabel.attributedText = NSAttributedString(
+                    string: newValue,
+                    attributes: appearance.titleTextAttributes
+                )
+            } else {
+                titleLabel.text = newValue
+            }
+        }
     }
     
     var subtitle: String? {
         get { return subtitleLabel.text }
-        set { subtitleLabel.text = newValue }
+        set {
+            if let newValue = newValue {
+                subtitleLabel.attributedText = NSAttributedString(
+                    string: newValue,
+                    attributes: appearance.messageTextAttributes
+                )
+            } else {
+                subtitleLabel.text = newValue
+            }
+        }
     }
     
-    override init(frame: CGRect) {
+    init(appearance: DMActionControllerAppearance) {
+        self.appearance = appearance
         titleLabel = DMAutoHidingLabel(frame: .zero)
         titleLabel.backgroundColor = .clear
-        titleLabel.font = .systemFont(ofSize: 17, weight: .semibold)
-        titleLabel.textColor = .white
-        
         subtitleLabel = DMAutoHidingLabel(frame: .zero)
         subtitleLabel.backgroundColor = .clear
-        subtitleLabel.font = .systemFont(ofSize: 13)
-        subtitleLabel.textColor = .white
-        
-        super.init(frame: frame)
+        super.init(frame: .null)
         axis = .vertical
         alignment = .center
         distribution = .fillProportionally
