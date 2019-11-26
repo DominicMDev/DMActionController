@@ -9,6 +9,7 @@
 import UIKit
 
 protocol DMActionViewDelegate: class {
+    var backgroundColor: UIColor! { get }
     func actionView(_ actionView: DMActionView, wasSelectedWith action: DMAction)
 }
 
@@ -25,14 +26,18 @@ class DMActionView: UIStackView {
     
     weak var delegate: DMActionViewDelegate?
     
+    var color: UIColor {
+        delegate?.backgroundColor ?? DMActionControllerAppearance.shared.backgroundColor
+    }
+    
     init(_ action: DMAction, style: DMActionController.Style, delegate: DMActionViewDelegate? = nil) {
         self.action = action
         super.init(frame: .null)
+        self.delegate = delegate
         switch style {
         case .table: initAsTableCell()
         case .collection: initAsCollectionCell()
         }
-        self.delegate = delegate
     }
     
     required init(coder: NSCoder) {
@@ -48,7 +53,7 @@ class DMActionView: UIStackView {
         self.heightAnchor.constraint(equalToConstant: 56).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
-        imageView.backgroundColor = .white
+        imageView.backgroundColor = color
         
         titleLabel.textAlignment = .left
         titleLabel.numberOfLines = 1
@@ -95,7 +100,7 @@ class DMActionView: UIStackView {
         imageView.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor).isActive = true
         imageContainer.layer.cornerRadius = 25
         imageContainer.layer.masksToBounds = true
-        imageContainer.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        imageContainer.backgroundColor = color.darker(by: 10)
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 2
         
@@ -174,4 +179,28 @@ class DMActionView: UIStackView {
         isHighlighted = false
     }
     
+}
+
+
+private extension UIColor {
+    
+    func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: abs(percentage) )
+    }
+
+    func darker(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: -1 * abs(percentage) )
+    }
+
+    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
+           var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+           if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+               return UIColor(red: min(red + percentage/100, 1.0),
+                              green: min(green + percentage/100, 1.0),
+                              blue: min(blue + percentage/100, 1.0),
+                              alpha: alpha)
+           } else {
+               return nil
+           }
+       }
 }

@@ -13,10 +13,6 @@ public class DMActionControllerAppearance {
     
     internal static let shared = DMActionControllerAppearance()
     
-    internal static func copy() -> DMActionControllerAppearance {
-        return DMActionControllerAppearance(copy: shared)
-    }
-    
     // MARK: - NavBar
     private let __titleTextAttributes: [NSAttributedString.Key : Any] = [
         .font: UIFont.systemFont(ofSize: 13),
@@ -107,19 +103,25 @@ public class DMActionControllerAppearance {
         set { _dragViewCornerRadius = newValue }
     }
     
-    // MARK: - Object Lifecycle
     
-    init() {}
-    
-    init(copy: DMActionControllerAppearance) {
-        _titleTextAttributes = copy._titleTextAttributes
-        _messageTextAttributes = copy._messageTextAttributes
-        _backgroundColor = copy._backgroundColor
-        _cornerRadius = copy._cornerRadius
-        _dragViewColor = copy._dragViewColor
-        _dragViewWidth = copy._dragViewWidth
-        _dragViewCornerRadius = copy._dragViewCornerRadius
+    public func setActionTextAttributes(_ attributes: [NSAttributedString.Key : Any]?,
+                                        forStyle style: DMAction.Style) {
+        DMActionAppearance.shared.setTextAttributes(attributes, forStyle: style)
     }
+    
+    public func actionTextAttributes(forStyle style: DMAction.Style) -> [NSAttributedString.Key : Any] {
+        DMActionAppearance.shared.textAttributes(forStyle: style)
+    }
+    
+    public func setActionImageTint(_ color: UIColor?, forStyle style: DMAction.Style) {
+        DMActionAppearance.shared.setImageTint(color, forStyle: style)
+    }
+    
+    public func actionImageTint(forStyle style: DMAction.Style) -> UIColor? {
+        DMActionAppearance.shared.imageTint(forStyle: style)
+    }
+    
+    internal init() {}
     
 }
 
@@ -128,18 +130,6 @@ public class DMActionControllerAppearance {
 public class DMActionAppearance {
     
     internal static let shared = DMActionAppearance()
-    
-    internal static func copy() -> DMActionAppearance {
-        return DMActionAppearance(copy: shared)
-    }
-    
-    private var _backgroundColor: UIColor? = .white
-    
-    /// The background color of the action content.
-    public var backgroundColor: UIColor! {
-        get { _backgroundColor ?? .white }
-        set { _backgroundColor = newValue }
-    }
     
     private let _defaultTextAttributes: [NSAttributedString.Key : Any] = [
         .font: UIFont.systemFont(ofSize: 13),
@@ -184,7 +174,7 @@ public class DMActionAppearance {
         }
     }
     
-    private var defaultImageTint: UIColor? = nil
+    private var defaultImageTint: UIColor? = .black
     private var cancelImageTint: UIColor? = nil
     
     /// <#Description#>
@@ -205,15 +195,6 @@ public class DMActionAppearance {
         case .default: return defaultImageTint
         case .cancel: return cancelImageTint
         }
-    }
-    
-    init() {}
-    
-    init(copy: DMActionAppearance) {
-        defaultTextAttributes = copy.defaultTextAttributes
-        cancelTextAttributes = copy.cancelTextAttributes
-        defaultImageTint = copy.defaultImageTint
-        cancelImageTint = copy.cancelImageTint
     }
     
 }

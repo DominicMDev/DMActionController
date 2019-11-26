@@ -66,7 +66,7 @@ public final class DMActionController: UIViewController {
         set { }
     }
     
-    public var appearance: DMActionControllerAppearance = .copy()
+    var appearance: DMActionControllerAppearance { return .shared }
     
     /*
      *  MARK: - IBOutlets
@@ -93,6 +93,29 @@ public final class DMActionController: UIViewController {
     private lazy var titleView = DMActionControllerTitleView(appearance: appearance)
     
     private var lastContentBounds: CGRect?
+    
+    private var _titleTextAttributes: [NSAttributedString.Key : Any]? = nil
+    private var _messageTextAttributes: [NSAttributedString.Key : Any]? = nil
+    private var _backgroundColor: UIColor? = nil
+    
+    private var _cornerRadius: CGFloat? = nil {
+        didSet {
+            if let radius = _cornerRadius, radius < 0 {
+                _cornerRadius = 0
+            }
+        }
+    }
+    
+    private var _dragViewColor: UIColor? = nil
+    private var _dragViewWidth: CGFloat? = nil
+    
+    private var _dragViewCornerRadius: CGFloat? = nil {
+        didSet {
+            if let radius = _dragViewCornerRadius, radius < 0 {
+                _dragViewCornerRadius = 0
+            }
+        }
+    }
     
     /*
      *  MARK: - Public Instance Properties
@@ -147,6 +170,59 @@ public final class DMActionController: UIViewController {
     /// The value of this property is set to the value you specified in the init(title:message:preferredStyle:) method.
     /// This value determines how the sheet is displayed onscreen.
     public private(set) var preferredStyle: DMActionController.Style!
+    
+    
+    /// The text attributes for the title.
+    public var titleTextAttributes: [NSAttributedString.Key : Any] {
+        get { _titleTextAttributes ?? appearance.titleTextAttributes }
+        set { _titleTextAttributes = newValue }
+    }
+    
+    /// The text attributes for the message.
+    public var messageTextAttributes: [NSAttributedString.Key : Any] {
+        get { _messageTextAttributes ?? appearance.messageTextAttributes }
+        set { _messageTextAttributes = newValue }
+    }
+    
+    private var tintColor: UIColor {
+        if let color = titleTextAttributes[.foregroundColor] as? UIColor {
+            return color
+        } else {
+            return .black
+        }
+    }
+    
+    /// The background color of the content
+    public var backgroundColor: UIColor! {
+        get { _backgroundColor ?? appearance.backgroundColor }
+        set { _backgroundColor = newValue }
+    }
+    
+    /// The corner radius of the content.
+    /// If set to `0` or below, the content will not clip to its bounds.
+    public var cornerRadius: CGFloat! {
+        get { _cornerRadius ?? appearance.cornerRadius }
+        set { _cornerRadius = newValue }
+    }
+    
+    /// The color of the drag view above the content
+    public var dragViewColor: UIColor! {
+        get { _dragViewColor ?? appearance.dragViewColor }
+        set { _dragViewColor = newValue }
+    }
+    
+    /// The width of the drag view above the content
+    public var dragViewWidth: CGFloat! {
+        get { _dragViewWidth ?? appearance.dragViewWidth }
+        set { _dragViewWidth = newValue }
+    }
+    
+    /// The corner radius of the drag view above the content.
+    /// If set to `0` or below, the dragView will not clip to its bounds.
+    public var dragViewCornerRadius: CGFloat! {
+        get { _dragViewCornerRadius ?? appearance.dragViewCornerRadius }
+        set { _dragViewCornerRadius = newValue }
+    }
     
     /*
      *  MARK: - Object Lifecycle
@@ -213,20 +289,22 @@ public final class DMActionController: UIViewController {
     }
     
     private func updateContentAppearance() {
-        dragView.backgroundColor = appearance.dragViewColor
-        dragView.layer.cornerRadius = appearance.dragViewCornerRadius
-        dragViewWidthConstraint.constant = appearance.dragViewWidth
-        if appearance.cornerRadius > 0 {
-            contentView.maskCorners([.topLeft, .topRight], cornerRadius: appearance.cornerRadius)
+        dragView.backgroundColor = dragViewColor
+        dragView.layer.cornerRadius = dragViewCornerRadius
+        dragViewWidthConstraint.constant = dragViewWidth
+        if cornerRadius > 0 {
+            contentView.maskCorners([.topLeft, .topRight], cornerRadius: cornerRadius)
         }
-        contentView.backgroundColor = appearance.backgroundColor
-        whiteView.backgroundColor = appearance.backgroundColor
+        contentView.backgroundColor = backgroundColor
+        whiteView.backgroundColor = backgroundColor
+        cancelButton.backgroundColor = backgroundColor
     }
     
     private func setUpNavBar() {
         setUpCloseButtonItem()
         if shouldShowNavBar() {
             navigationBar.shadowImage = nil
+            navigationBar.isTranslucent = false
             updateNavBarAppearance()
             navigationBar.barStyle = .default
             navigationBarHeightConstraint.constant = 44
@@ -252,9 +330,9 @@ public final class DMActionController: UIViewController {
     }
     
     private func updateNavBarAppearance() {
-        navigationBar.barTintColor = appearance.backgroundColor
-        navigationBar.backgroundColor = appearance.backgroundColor
-        navigationBar.tintColor = appearance.tintColor
+        navigationBar.barTintColor = backgroundColor
+        navigationBar.backgroundColor = backgroundColor
+        navigationBar.tintColor = tintColor
     }
     
     /*
@@ -331,8 +409,8 @@ public final class DMActionController: UIViewController {
         super.viewDidLayoutSubviews()
         guard lastContentBounds != contentView.bounds else { return }
         lastContentBounds = contentView.bounds
-        if appearance.cornerRadius > 0 {
-            contentView.maskCorners([.topLeft, .topRight], cornerRadius: appearance.cornerRadius)
+        if cornerRadius > 0 {
+            contentView.maskCorners([.topLeft, .topRight], cornerRadius: cornerRadius)
         }
     }
     
@@ -354,7 +432,8 @@ public final class DMActionController: UIViewController {
         switch sender.state {
         case .cancelled, .failed, .ended:
             let neededOffset = ((29/72) * containerView.frame.height)
-            if canDragToDismiss, translation.y > neededOffset {
+            let velocity = sender.velocity(in: self.view).y
+            if canDragToDismiss, (translation.y > neededOffset || velocity > 1500) {
                 didPressCancel()
             } else {
                 resetTransform()

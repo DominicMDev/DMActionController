@@ -88,7 +88,9 @@ class ViewController: UIViewController {
     private func addActions(to sheet: DMActionController) -> DMAction? {
         var disabled: DMAction?
         for i in 1...numberOfActions {
-            let image = shouldShowImages ? UIImage(named: "icon-\(i)", in: Bundle(for: ViewController.self), compatibleWith: nil) : nil
+            var ix = i
+            while ix > 5 { ix -= 5 }
+            let image = shouldShowImages ? UIImage(named: "icon-\(ix)", in: Bundle(for: ViewController.self), compatibleWith: nil) : nil
             let action = DMAction(image: image, title: "Action \(i)", style: .default)
             sheet.addAction(action)
             if i == 2 {
@@ -105,7 +107,15 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        let ap = DMActionController.appearance()
+        ap.backgroundColor = .green
+        ap.cornerRadius = 0
+        ap.dragViewWidth = 100
+        ap.dragViewCornerRadius = 2
+        ap.setActionImageTint(.yellow, forStyle: .default)
+        ap.setActionImageTint(.orange, forStyle: .cancel)
+        ap.setActionTextAttributes([.foregroundColor: UIColor.white], forStyle: .default)
+        ap.setActionTextAttributes([.foregroundColor: UIColor.orange], forStyle: .cancel)
     }
     
 }
