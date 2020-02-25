@@ -75,7 +75,7 @@ public final class DMActionController: UIViewController {
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var whiteView: UIView!
     @IBOutlet weak var dragView: UIView!
-    @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var contentView: _DMActionControllerContentView!
     @IBOutlet weak var navigationBar: UINavigationBar!
     @IBOutlet weak var contentStackView: UIStackView!
     @IBOutlet weak var cancelButton: DMCancelActionButton!
@@ -91,8 +91,6 @@ public final class DMActionController: UIViewController {
     private var cancelAction: DMAction? = nil
     
     private lazy var titleView = DMActionControllerTitleView(appearance: appearance)
-    
-    private var lastContentBounds: CGRect?
     
     private var _titleTextAttributes: [NSAttributedString.Key : Any]? = nil
     private var _messageTextAttributes: [NSAttributedString.Key : Any]? = nil
@@ -292,9 +290,7 @@ public final class DMActionController: UIViewController {
         dragView.backgroundColor = dragViewColor
         dragView.layer.cornerRadius = dragViewCornerRadius
         dragViewWidthConstraint.constant = dragViewWidth
-        if cornerRadius > 0 {
-            contentView.maskCorners([.topLeft, .topRight], cornerRadius: cornerRadius)
-        }
+        contentView.cornerRadius = cornerRadius
         contentView.backgroundColor = backgroundColor
         whiteView.backgroundColor = backgroundColor
         cancelButton.backgroundColor = backgroundColor
@@ -399,19 +395,6 @@ public final class DMActionController: UIViewController {
         stack.distribution = .fillEqually
         stack.spacing = 8
         return stack
-    }
-    
-    /*
-     *  MARK: -
-     */
-    
-    public override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        guard lastContentBounds != contentView.bounds else { return }
-        lastContentBounds = contentView.bounds
-        if cornerRadius > 0 {
-            contentView.maskCorners([.topLeft, .topRight], cornerRadius: cornerRadius)
-        }
     }
     
     /*
