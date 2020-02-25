@@ -121,7 +121,13 @@ class DMActionView: UIStackView {
         
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
         action.didUpdateIsEnabled = { [weak self] _ in
-            self?.updateViewAlphas()
+            if UIView.isInAnimationBlock {
+                self?.updateViewAlphas()
+            } else {
+                UIView.animate(withDuration: 0.2) { [weak self] in
+                    self?.updateViewAlphas()
+                }
+            }
         }
     }
     
