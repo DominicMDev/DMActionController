@@ -201,3 +201,57 @@ class _DMActionControllerContentView: UIView {
     }
     
 }
+
+internal extension UIColor {
+    
+    static var firstLabel: UIColor {
+        if #available(iOS 13.0, *) {
+            return .label
+        } else {
+            return .darkText
+        }
+    }
+    
+    static var secondLabel: UIColor {
+        if #available(iOS 13.0, *) {
+            return .secondaryLabel
+        } else {
+            return UIColor(red: 60/255, green: 60/255, blue: 67/255, alpha: 0.6)
+        }
+    }
+    
+    static var fill: UIColor {
+        if #available(iOS 13.0, *) {
+            return .secondarySystemBackground
+        } else {
+            return UIColor(red: 242/255, green: 242/255, blue: 247/255, alpha: 1)
+        }
+    }
+    
+    static var fill2: UIColor {
+        if #available(iOS 13.0, *) {
+            return .systemGray2
+        } else {
+            return UIColor(red: 174/255, green: 174/255, blue: 178/255, alpha: 1)
+        }
+    }
+    
+    static var fill3: UIColor {
+        if #available(iOS 13.0, *) {
+            return .secondarySystemFill
+        } else {
+            return UIColor(red: 120/255, green: 120/255, blue: 128/255, alpha: 0.16)
+        }
+    }
+    
+    static var iconTint: UIColor { firstLabel }
+    
+    static var dmSeperator: UIColor {
+        if #available(iOS 13.0, *) {
+            return .opaqueSeparator
+        } else {
+            return UIColor(red: 198/255, green: 198/255, blue: 200/255, alpha: 1)
+        }
+    }
+    
+}
