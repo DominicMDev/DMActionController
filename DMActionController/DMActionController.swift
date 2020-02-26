@@ -75,13 +75,13 @@ public final class DMActionController: UIViewController {
      *  MARK: - IBOutlets
      */
     
-    let containerView = UIView(frame: .zero)
+    internal let containerView = UIView(frame: .zero)
     private let dragView = UIView(frame: .zero)
     private let contentView = _DMActionControllerContentView(frame: .zero)
     private let navigationBar = UINavigationBar(frame: .zero)
     private let contentStackView = UIStackView(frame: .zero)
     private let cancelButton = DMCancelActionButton(frame: .zero)
-    private let bottomView = UIView(frame: .zero)
+    internal let bottomView = UIView(frame: .zero)
     private var navigationBarHeightConstraint: NSLayoutConstraint!
     private var dragViewWidthConstraint: NSLayoutConstraint!
     
