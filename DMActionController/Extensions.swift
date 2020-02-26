@@ -28,14 +28,14 @@ internal extension Optional where Wrapped == String {
     
 }
 
-extension UIRectCorner {
+internal extension UIRectCorner {
     
-    public static var topCorners: UIRectCorner { [topLeft, topRight] }
-    public static var bottomCorners: UIRectCorner { [bottomLeft, bottomRight] }
-    public static var leftCorners: UIRectCorner { [topLeft, bottomLeft] }
-    public static var rightCorners: UIRectCorner { [topRight, bottomRight] }
+    static var topCorners: UIRectCorner { [topLeft, topRight] }
+    static var bottomCorners: UIRectCorner { [bottomLeft, bottomRight] }
+    static var leftCorners: UIRectCorner { [topLeft, bottomLeft] }
+    static var rightCorners: UIRectCorner { [topRight, bottomRight] }
     
-    public var caCornerMask: CACornerMask {
+    var caCornerMask: CACornerMask {
         switch self {
         case .topLeft: return .topLeft
         case .topRight: return .topRight
@@ -55,7 +55,7 @@ extension UIRectCorner {
         }
     }
     
-    @inlinable public func forEach(_ body: (UIRectCorner) -> Void) {
+    @inlinable func forEach(_ body: (UIRectCorner) -> Void) {
         for corner: UIRectCorner in [.topLeft, .topRight, .bottomLeft, .bottomRight] {
             if self.contains(corner) {
                 body(corner)
@@ -65,30 +65,30 @@ extension UIRectCorner {
     
 }
 
-extension CACornerMask {
+internal extension CACornerMask {
     
-    public static var layerMinXCorners: CACornerMask { [layerMinXMinYCorner, layerMinXMaxYCorner] }
-    public static var layerMinYCorners: CACornerMask { [layerMinXMinYCorner, layerMaxXMinYCorner] }
-    public static var layerMaxXCorners: CACornerMask { [layerMaxXMinYCorner, layerMaxXMaxYCorner] }
-    public static var layerMaxYCorners: CACornerMask { [layerMinXMaxYCorner, layerMaxXMaxYCorner] }
+    static var layerMinXCorners: CACornerMask { [layerMinXMinYCorner, layerMinXMaxYCorner] }
+    static var layerMinYCorners: CACornerMask { [layerMinXMinYCorner, layerMaxXMinYCorner] }
+    static var layerMaxXCorners: CACornerMask { [layerMaxXMinYCorner, layerMaxXMaxYCorner] }
+    static var layerMaxYCorners: CACornerMask { [layerMinXMaxYCorner, layerMaxXMaxYCorner] }
     
-    public static var layerAllCorners: CACornerMask {
+    static var layerAllCorners: CACornerMask {
         [layerMinXMinYCorner, layerMaxXMinYCorner, layerMinXMaxYCorner, layerMaxXMaxYCorner]
     }
     
-    public static var topLeft: CACornerMask { layerMinXMinYCorner }
-    public static var topRight: CACornerMask { layerMaxXMinYCorner }
-    public static var bottomLeft: CACornerMask { layerMinXMaxYCorner }
-    public static var bottomRight: CACornerMask { layerMaxXMaxYCorner }
+    static var topLeft: CACornerMask { layerMinXMinYCorner }
+    static var topRight: CACornerMask { layerMaxXMinYCorner }
+    static var bottomLeft: CACornerMask { layerMinXMaxYCorner }
+    static var bottomRight: CACornerMask { layerMaxXMaxYCorner }
     
-    public static var topCorners: CACornerMask { layerMinYCorners }
-    public static var bottomCorners: CACornerMask { layerMaxYCorners }
-    public static var leftCorners: CACornerMask { layerMinXCorners }
-    public static var rightCorners: CACornerMask { layerMaxXCorners }
+    static var topCorners: CACornerMask { layerMinYCorners }
+    static var bottomCorners: CACornerMask { layerMaxYCorners }
+    static var leftCorners: CACornerMask { layerMinXCorners }
+    static var rightCorners: CACornerMask { layerMaxXCorners }
     
-    public static var allCorners: CACornerMask { layerAllCorners }
+    static var allCorners: CACornerMask { layerAllCorners }
     
-    public var uiRectCorner: UIRectCorner {
+    var uiRectCorner: UIRectCorner {
         switch self {
         case .layerMinXMinYCorner: return .topLeft
         case .layerMaxXMinYCorner: return .topRight
@@ -108,7 +108,7 @@ extension CACornerMask {
         }
     }
     
-    @inlinable public func forEach(_ body: (CACornerMask) -> Void) {
+    @inlinable func forEach(_ body: (CACornerMask) -> Void) {
         for corner: CACornerMask in [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner] {
             if self.contains(corner) {
                 body(corner)
@@ -121,6 +121,25 @@ extension CACornerMask {
 internal extension UIView {
     
     static var isInAnimationBlock: Bool { UIView.inheritedAnimationDuration != 0 }
+    
+    func addConstrainedSubview(_ subview: UIView, constant: CGFloat = 0,
+                               top: Bool = true , bottom: Bool = true,
+                               leading: Bool = true, trailing: Bool = true) {
+        addSubview(subview)
+        subview.translatesAutoresizingMaskIntoConstraints = false
+        if top {
+            subview.topAnchor.constraint(equalTo: topAnchor, constant: constant).isActive = true
+        }
+        if bottom {
+            subview.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -constant).isActive = true
+        }
+        if leading {
+            subview.leadingAnchor.constraint(equalTo: leadingAnchor, constant: constant).isActive = true
+        }
+        if trailing {
+            subview.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -constant).isActive = true
+        }
+    }
     
     func maskCorners(_ corners: UIRectCorner, cornerRadius: CGFloat) {
         if #available(iOS 11.0, *) {

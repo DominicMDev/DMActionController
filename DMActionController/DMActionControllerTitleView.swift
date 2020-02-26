@@ -13,42 +13,42 @@ class DMActionControllerTitleView: UIStackView {
     var titleLabel: DMAutoHidingLabel
     var subtitleLabel: DMAutoHidingLabel
     
-    private var appearance: DMActionControllerAppearance
+    var titleTextAttributes: [NSAttributedString.Key : Any] { didSet { updateTitle(title) } }
+    var subtitleTextAttributes: [NSAttributedString.Key : Any] { didSet { updateSubtitle(subtitle) } }
     
     var title: String? {
         get { return titleLabel.text }
-        set {
-            if let newValue = newValue {
-                titleLabel.attributedText = NSAttributedString(
-                    string: newValue,
-                    attributes: appearance.titleTextAttributes
-                )
-            } else {
-                titleLabel.text = newValue
-            }
-        }
+        set { updateTitle(newValue) }
     }
     
     var subtitle: String? {
         get { return subtitleLabel.text }
-        set {
-            if let newValue = newValue {
-                subtitleLabel.attributedText = NSAttributedString(
-                    string: newValue,
-                    attributes: appearance.messageTextAttributes
-                )
-            } else {
-                subtitleLabel.text = newValue
-            }
+        set { updateSubtitle(newValue) }
+    }
+    
+    private func updateTitle(_ title: String?) {
+        if let title = title {
+            titleLabel.attributedText = NSAttributedString(string: title, attributes: titleTextAttributes)
+        } else {
+            titleLabel.text = title
+        }
+    }
+    
+    private func updateSubtitle(_ subtitle: String?) {
+        if let subtitle = subtitle {
+            subtitleLabel.attributedText = NSAttributedString(string: subtitle, attributes: subtitleTextAttributes)
+        } else {
+            subtitleLabel.text = subtitle
         }
     }
     
     init(appearance: DMActionControllerAppearance) {
-        self.appearance = appearance
         titleLabel = DMAutoHidingLabel(frame: .zero)
         titleLabel.backgroundColor = .clear
         subtitleLabel = DMAutoHidingLabel(frame: .zero)
         subtitleLabel.backgroundColor = .clear
+        titleTextAttributes = appearance.titleTextAttributes
+        subtitleTextAttributes = appearance.messageTextAttributes
         super.init(frame: .null)
         axis = .vertical
         alignment = .center

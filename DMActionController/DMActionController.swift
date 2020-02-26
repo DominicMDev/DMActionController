@@ -57,6 +57,9 @@ public extension DMActionController {
 /// The `DMActionController` class is intended to be used as-is and does not support subclassing.
 public final class DMActionController: UIViewController {
     
+    /// Returns the appearance object for the receiver.
+    ///
+    /// - Returns: The appearance object for the receiver.
     public static func appearance() -> DMActionControllerAppearance {
         return .shared
     }
@@ -66,21 +69,21 @@ public final class DMActionController: UIViewController {
         set { }
     }
     
-    var appearance: DMActionControllerAppearance { return .shared }
+    internal var appearance: DMActionControllerAppearance { return .shared }
     
     /*
      *  MARK: - IBOutlets
      */
     
-    @IBOutlet weak var containerView: UIView!
-    @IBOutlet weak var whiteView: UIView!
-    @IBOutlet weak var dragView: UIView!
-    @IBOutlet weak var contentView: _DMActionControllerContentView!
-    @IBOutlet weak var navigationBar: UINavigationBar!
-    @IBOutlet weak var contentStackView: UIStackView!
-    @IBOutlet weak var cancelButton: DMCancelActionButton!
-    @IBOutlet var navigationBarHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var dragViewWidthConstraint: NSLayoutConstraint!
+    let containerView = UIView(frame: .zero)
+    private let dragView = UIView(frame: .zero)
+    private let contentView = _DMActionControllerContentView(frame: .zero)
+    private let navigationBar = UINavigationBar(frame: .zero)
+    private let contentStackView = UIStackView(frame: .zero)
+    private let cancelButton = DMCancelActionButton(frame: .zero)
+    private let bottomView = UIView(frame: .zero)
+    private var navigationBarHeightConstraint: NSLayoutConstraint!
+    private var dragViewWidthConstraint: NSLayoutConstraint!
     
     /*
      *  MARK: - Private Instance Properties
@@ -242,7 +245,7 @@ public final class DMActionController: UIViewController {
     ///
     /// - Returns: An initialized action controller object.
     public convenience init(title: String?, message: String?, preferredStyle: DMActionController.Style) {
-        self.init(nibName: "DMActionController", bundle: Bundle(for: DMActionController.self))
+        self.init(nibName: nil, bundle: nil)
         self.title = title
         self.message = message
         self.preferredStyle = preferredStyle
@@ -272,39 +275,44 @@ public final class DMActionController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.isOpaque = false
-        setUpContentView()
-        setUpNavBar()
+        setUpViews()
         navigationItem.titleView = titleView
-    }
-    
-    private func setUpContentView() {
-        updateContentAppearance()
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(draggedView(_:)))
-        containerView.addGestureRecognizer(pan)
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapBackground))
         tap.delegate = self
         view?.addGestureRecognizer(tap)
     }
     
+    /*
+     *  MARK: -
+     */
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateContentAppearance()
+        updateNavBarAppearance()
+        loadViews()
+    }
+    
     private func updateContentAppearance() {
+        titleView.titleTextAttributes = titleTextAttributes
+        titleView.subtitleTextAttributes = messageTextAttributes
         dragView.backgroundColor = dragViewColor
         dragView.layer.cornerRadius = dragViewCornerRadius
         dragViewWidthConstraint.constant = dragViewWidth
         contentView.cornerRadius = cornerRadius
         contentView.backgroundColor = backgroundColor
-        whiteView.backgroundColor = backgroundColor
+        bottomView.backgroundColor = backgroundColor
         cancelButton.backgroundColor = backgroundColor
     }
     
-    private func setUpNavBar() {
+    private func updateNavBarAppearance() {
         setUpCloseButtonItem()
+        navigationBar.barTintColor = backgroundColor
+        navigationBar.backgroundColor = backgroundColor
+        navigationBar.tintColor = tintColor
         if shouldShowNavBar() {
-            navigationBar.shadowImage = nil
-            navigationBar.isTranslucent = false
-            updateNavBarAppearance()
-            navigationBar.barStyle = .default
+            navigationBar.isHidden = false
             navigationBarHeightConstraint.constant = 44
-            navigationBar.setItems([navigationItem], animated: false)
         } else {
             navigationBar.isHidden = true
             navigationBarHeightConstraint.constant = 0
@@ -323,35 +331,6 @@ public final class DMActionController: UIViewController {
     
     private func shouldShowNavBar() -> Bool {
         return !title.isNilOrEmpty || !message.isNilOrEmpty || cancelAction == nil
-    }
-    
-    private func updateNavBarAppearance() {
-        navigationBar.barTintColor = backgroundColor
-        navigationBar.backgroundColor = backgroundColor
-        navigationBar.tintColor = tintColor
-    }
-    
-    /*
-     *  MARK: -
-     */
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        updateContentAppearance()
-        updateNavBar()
-        loadViews()
-    }
-    
-    private func updateNavBar() {
-        setUpCloseButtonItem()
-        if shouldShowNavBar() {
-            updateNavBarAppearance()
-            navigationBar.isHidden = false
-            navigationBarHeightConstraint.constant = 44
-        } else {
-            navigationBar.isHidden = true
-            navigationBarHeightConstraint.constant = 0
-        }
     }
     
     private func loadViews() {
@@ -406,7 +385,7 @@ public final class DMActionController: UIViewController {
         didPressCancel()
     }
     
-    @IBAction private func didPressCancel() {
+    @objc private func didPressCancel() {
         dismiss(animated: true, completion: cancelAction?.performHandler)
     }
     
@@ -425,7 +404,7 @@ public final class DMActionController: UIViewController {
         default:
             containerView.transform = CGAffineTransform.identity.translatedBy(x: 0, y: translation.y)
             guard translation.y < 0 else { return }
-            whiteView.transform = CGAffineTransform.identity.scaledBy(x: 1, y: -translation.y)
+            bottomView.transform = CGAffineTransform.identity.scaledBy(x: 1, y: -translation.y)
         }
     }
     
@@ -434,7 +413,7 @@ public final class DMActionController: UIViewController {
                        usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5,
                        options: .layoutSubviews, animations: {
                         self.containerView.transform = .identity
-                        self.whiteView.transform = .identity
+                        self.bottomView.transform = .identity
         }, completion: nil)
     }
     
@@ -451,4 +430,89 @@ extension DMActionController: UIGestureRecognizerDelegate {
         if touch.view == self.view { return true }
         return false
     }
+}
+
+
+extension DMActionController {
+    
+    private func setUpViews() {
+        setUpContainerView()
+        setUpDragView()
+        setUpContentView()
+        setUpNavigationBar()
+        setUpStackView()
+        setUpCancelButton()
+        setUpBottomView()
+        updateContentAppearance()
+        updateNavBarAppearance()
+    }
+    
+    private func setUpContainerView() {
+        containerView.backgroundColor = .clear
+        if #available(iOS 11.0, *) { containerView.insetsLayoutMarginsFromSafeArea = true }
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(draggedView(_:)))
+        containerView.addGestureRecognizer(pan)
+        view.addConstrainedSubview(containerView, top: false, bottom: false)
+        containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 2).isActive = true
+    }
+    
+    private func setUpDragView() {
+        containerView.addConstrainedSubview(dragView, bottom: false, leading: false, trailing: false)
+        dragView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+        dragView.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        dragViewWidthConstraint = dragView.widthAnchor.constraint(equalToConstant: dragViewWidth)
+        dragViewWidthConstraint.isActive = true
+    }
+    
+    private func setUpContentView() {
+        contentView.clipsToBounds = true
+        containerView.addConstrainedSubview(contentView, top: false)
+        contentView.topAnchor.constraint(equalTo: dragView.bottomAnchor, constant: 8).isActive = true
+    }
+    
+    private func setUpNavigationBar() {
+        navigationBar.shadowImage = nil
+        navigationBar.isTranslucent = false
+        navigationBar.barStyle = .default
+        navigationBar.setItems([navigationItem], animated: false)
+        contentView.addConstrainedSubview(navigationBar, bottom: false)
+        navigationBarHeightConstraint = navigationBar.heightAnchor.constraint(equalToConstant: 44)
+        navigationBarHeightConstraint.isActive = true
+    }
+    
+    private func setUpStackView() {
+        contentStackView.axis = .vertical
+        contentStackView.alignment = .leading
+        contentStackView.distribution = .fillEqually
+        contentStackView.spacing = 0
+        let stack = UIStackView(frame: .zero)
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.distribution = .fill
+        stack.spacing = 16
+        stack.addArrangedSubview(contentStackView)
+        stack.addArrangedSubview(cancelButton)
+        contentView.addConstrainedSubview(stack, constant: 8, top: false, bottom: false)
+        stack.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
+        if #available(iOS 11.0, *) {
+            stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        } else {
+            stack.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        }
+        contentView.sendSubviewToBack(stack)
+    }
+    
+    private func setUpCancelButton() {
+        cancelButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        cancelButton.addTarget(self, action: #selector(didPressCancel), for: .touchUpInside)
+    }
+    
+    private func setUpBottomView() {
+        bottomView.backgroundColor = .white
+        view.addConstrainedSubview(bottomView, top: false, bottom: false)
+        bottomView.topAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        bottomView.heightAnchor.constraint(equalToConstant: 2).isActive = true
+        view.sendSubviewToBack(bottomView)
+    }
+    
 }
