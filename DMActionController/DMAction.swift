@@ -103,7 +103,7 @@ open class DMAction: NSObject {
     
     /// The color that is applied to title of the action’s button.
     ///
-    /// The default value of this property is `UIColor.black`.
+    /// The default value of this property is `UIColor.label`.
     open var textColor: UIColor! {
         get { return _textColor ?? appearance.textColor(forStyle: style) }
         set { _textColor = newValue }

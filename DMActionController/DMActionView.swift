@@ -66,7 +66,7 @@ class DMActionView: UIStackView {
     
     private func addSeparatorView() {
         let view = UIView(frame: .null)
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .dmSeperator
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         view.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
@@ -100,7 +100,7 @@ class DMActionView: UIStackView {
         imageView.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor).isActive = true
         imageContainer.layer.cornerRadius = 25
         imageContainer.layer.masksToBounds = true
-        imageContainer.backgroundColor = color.darker(by: 10)
+        imageContainer.backgroundColor = .fill3
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 2
         
@@ -185,28 +185,4 @@ class DMActionView: UIStackView {
         isHighlighted = false
     }
     
-}
-
-
-private extension UIColor {
-    
-    func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
-        return self.adjust(by: abs(percentage) )
-    }
-
-    func darker(by percentage: CGFloat = 30.0) -> UIColor? {
-        return self.adjust(by: -1 * abs(percentage) )
-    }
-
-    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
-           var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
-           if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
-               return UIColor(red: min(red + percentage/100, 1.0),
-                              green: min(green + percentage/100, 1.0),
-                              blue: min(blue + percentage/100, 1.0),
-                              alpha: alpha)
-           } else {
-               return nil
-           }
-       }
 }
