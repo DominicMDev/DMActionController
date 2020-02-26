@@ -34,6 +34,9 @@ extension DMAction {
 /// before displaying the corresponding alert to the user.
 open class DMAction: NSObject {
     
+    /// Returns the appearance object for the receiver.
+    ///
+    /// - Returns: The appearance object for the receiver.
     public static func appearance() -> DMActionAppearance {
         return .shared
     }
@@ -49,15 +52,20 @@ open class DMAction: NSObject {
     internal var didUpdateIsEnabled: ((Bool) -> Void)?
     
     internal var attributedText: NSAttributedString {
+        let text = title ?? ((style == .cancel) ? "Cancel" : "")
+        return NSAttributedString(string: text, attributes: textAttributes)
+    }
+    
+    internal var textAttributes: [NSAttributedString.Key : Any] {
         var attributes = appearance.textAttributes(forStyle: style)
         if let color = _textColor { attributes[.foregroundColor] = color }
-        let text = title ?? ((style == .cancel) ? "Cancel" : "")
-        return NSAttributedString(string: text, attributes: attributes)
+        return attributes
     }
     
     /// Create and return an action with the specified image, title, and behavior.
     ///
     /// Actions are enabled by default when you create them.
+    ///
     /// - Parameters:
     ///   - image: The image to use for the button image. This parameter must not be nil, except in an action
     ///            with `ZRAction.Style.cancel` or in an action controller view with `DMActionController.Style.table`.
@@ -68,6 +76,7 @@ open class DMAction: NSObject {
     ///            constants in `DMAction.Style`.
     ///   - handler: A block to execute when the user selects the action. This block has no return value and
     ///              takes the selected action object as its only parameter.
+    ///
     /// - Returns: A new action object.
     public convenience init(image: UIImage? = nil, title: String?, style: Style, handler: ((DMAction) -> Void)? = nil) {
         self.init()
@@ -110,7 +119,7 @@ open class DMAction: NSObject {
     
     /// A Boolean value indicating whether the action is currently enabled.
     ///
-    /// The default value of this property is true. Changing the value to false causes the action to appear dimmed
+    /// The default value of this property is `true`. Changing the value to `false` causes the action to appear dimmed
     /// in the resulting action view. When an action is disabled, taps on the corresponding button have no effect.
     open var isEnabled: Bool = true {
         didSet { didUpdateIsEnabled?(isEnabled) }
