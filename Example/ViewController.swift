@@ -107,15 +107,15 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let ap = DMActionController.appearance()
-        ap.backgroundColor = .green
-        ap.cornerRadius = 0
-        ap.dragViewWidth = 100
-        ap.dragViewCornerRadius = 2
-        ap.setActionImageTint(.yellow, forStyle: .default)
-        ap.setActionImageTint(.orange, forStyle: .cancel)
-        ap.setActionTextAttributes([.foregroundColor: UIColor.white], forStyle: .default)
-        ap.setActionTextAttributes([.foregroundColor: UIColor.orange], forStyle: .cancel)
+//        let ap = DMActionController.appearance()
+//        ap.backgroundColor = .green
+//        ap.cornerRadius = 0
+//        ap.dragViewWidth = 100
+//        ap.dragViewCornerRadius = 2
+//        ap.setActionImageTint(.yellow, forStyle: .default)
+//        ap.setActionImageTint(.orange, forStyle: .cancel)
+//        ap.setActionTextAttributes([.foregroundColor: UIColor.white], forStyle: .default)
+//        ap.setActionTextAttributes([.foregroundColor: UIColor.orange], forStyle: .cancel)
     }
     
 }
