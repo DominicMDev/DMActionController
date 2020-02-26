@@ -53,7 +53,6 @@ public class DMActionControllerAppearance {
         }
     }
     
-    
     // MARK: - Content Color
     
     private var _backgroundColor: UIColor? = .fill
@@ -111,7 +110,6 @@ public class DMActionControllerAppearance {
         set { _dragViewCornerRadius = newValue }
     }
     
-    
     /// Sets the actions' text attributes for a given action style.
     ///
     /// - Parameters:
@@ -122,7 +120,6 @@ public class DMActionControllerAppearance {
     public func setActionTextAttributes(_ attributes: [NSAttributedString.Key : Any]?, forStyle style: DMAction.Style) {
         DMActionAppearance.shared.setTextAttributes(attributes, forStyle: style)
     }
-    
     
     /// Returns the actions' text attributes for a given action style.
     ///

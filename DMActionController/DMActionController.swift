@@ -71,9 +71,7 @@ public final class DMActionController: UIViewController {
     
     internal var appearance: DMActionControllerAppearance { return .shared }
     
-    /*
-     *  MARK: - IBOutlets
-     */
+    // MARK: - Subviews
     
     internal let containerView = UIView(frame: .zero)
     private let dragView = UIView(frame: .zero)
@@ -82,12 +80,11 @@ public final class DMActionController: UIViewController {
     private let contentStackView = UIStackView(frame: .zero)
     private let cancelButton = DMCancelActionButton(frame: .zero)
     internal let bottomView = UIView(frame: .zero)
+    
     private var navigationBarHeightConstraint: NSLayoutConstraint!
     private var dragViewWidthConstraint: NSLayoutConstraint!
     
-    /*
-     *  MARK: - Private Instance Properties
-     */
+    // MARK: - Private Instance Properties
     
     private var _actions: [DMAction] = []
     
@@ -118,9 +115,7 @@ public final class DMActionController: UIViewController {
         }
     }
     
-    /*
-     *  MARK: - Public Instance Properties
-     */
+    // MARK: - Public Instance Properties
     
     /// The title of the alert.
     ///
@@ -225,9 +220,7 @@ public final class DMActionController: UIViewController {
         set { _dragViewCornerRadius = newValue }
     }
     
-    /*
-     *  MARK: - Object Lifecycle
-     */
+    // MARK: - Object Lifecycle
     
     /// Creates and returns a view controller for displaying an possible actions to the user.
     ///
@@ -268,9 +261,7 @@ public final class DMActionController: UIViewController {
         }
     }
     
-    /*
-     *  MARK: - View Lifecycle
-     */
+    // MARK: - View Lifecycle
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -282,9 +273,7 @@ public final class DMActionController: UIViewController {
         view?.addGestureRecognizer(tap)
     }
     
-    /*
-     *  MARK: -
-     */
+    // MARK: -
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -376,9 +365,7 @@ public final class DMActionController: UIViewController {
         return stack
     }
     
-    /*
-     *  MARK: - Objective-C methods
-     */
+    // MARK: - Objective-C methods
     
     @objc private func didTapBackground() {
         guard tapBackgroundToDismiss else { return }
@@ -402,19 +389,18 @@ public final class DMActionController: UIViewController {
             }
             
         default:
-            containerView.transform = CGAffineTransform.identity.translatedBy(x: 0, y: translation.y)
-            guard translation.y < 0 else { return }
-            bottomView.transform = CGAffineTransform.identity.scaledBy(x: 1, y: -translation.y)
+            let yTranslation = max(translation.y, minTranslation)
+            containerView.transform = CGAffineTransform.identity.translatedBy(x: 0, y: yTranslation)
         }
     }
     
     private func resetTransform() {
         UIView.animate(withDuration: 0.7, delay: 0,
                        usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5,
-                       options: .layoutSubviews, animations: {
-                        self.containerView.transform = .identity
-                        self.bottomView.transform = .identity
-        }, completion: nil)
+                       options: .layoutSubviews,
+                       animations: { [weak self] in
+                        self?.containerView.transform = .identity
+        })
     }
     
 }
@@ -432,6 +418,7 @@ extension DMActionController: UIGestureRecognizerDelegate {
     }
 }
 
+// MARK: - Set Up Views
 
 extension DMActionController {
     
@@ -439,21 +426,25 @@ extension DMActionController {
         setUpContainerView()
         setUpDragView()
         setUpContentView()
+        setUpBottomView()
         setUpNavigationBar()
         setUpStackView()
         setUpCancelButton()
-        setUpBottomView()
         updateContentAppearance()
         updateNavBarAppearance()
     }
     
     private func setUpContainerView() {
         containerView.backgroundColor = .clear
-        if #available(iOS 11.0, *) { containerView.insetsLayoutMarginsFromSafeArea = true }
         let pan = UIPanGestureRecognizer(target: self, action: #selector(draggedView(_:)))
         containerView.addGestureRecognizer(pan)
-        view.addConstrainedSubview(containerView, top: false, bottom: false)
-        containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 2).isActive = true
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(containerView)
+        containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        containerView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        let screenSize = UIScreen.main.bounds.size
+        let width = min(screenSize.width, screenSize.height)
+        containerView.widthAnchor.constraint(equalToConstant: width).isActive = true
     }
     
     private func setUpDragView() {
@@ -466,8 +457,16 @@ extension DMActionController {
     
     private func setUpContentView() {
         contentView.clipsToBounds = true
-        containerView.addConstrainedSubview(contentView, top: false)
+        containerView.addConstrainedSubview(contentView, top: false, bottom: false)
         contentView.topAnchor.constraint(equalTo: dragView.bottomAnchor, constant: 8).isActive = true
+        contentView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+    }
+    
+    private func setUpBottomView() {
+        containerView.addConstrainedSubview(bottomView, top: false)
+        bottomView.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -1).isActive = true
+        bottomView.bottomAnchor.constraint(greaterThanOrEqualTo: view.bottomAnchor).isActive = true
+        containerView.sendSubviewToBack(bottomView)
     }
     
     private func setUpNavigationBar() {
@@ -492,7 +491,7 @@ extension DMActionController {
         stack.spacing = 16
         stack.addArrangedSubview(contentStackView)
         stack.addArrangedSubview(cancelButton)
-        contentView.addConstrainedSubview(stack, constant: 8, top: false, bottom: false)
+        contentView.addConstrainedSubview(stack, constant: 8, top: false)
         stack.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         if #available(iOS 11.0, *) {
             stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
@@ -507,12 +506,11 @@ extension DMActionController {
         cancelButton.addTarget(self, action: #selector(didPressCancel), for: .touchUpInside)
     }
     
-    private func setUpBottomView() {
-        bottomView.backgroundColor = .white
-        view.addConstrainedSubview(bottomView, top: false, bottom: false)
-        bottomView.topAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        bottomView.heightAnchor.constraint(equalToConstant: 2).isActive = true
-        view.sendSubviewToBack(bottomView)
+    var minTranslation: CGFloat {
+        let contentHeight = contentView.frame.height + 8 + dragView.frame.height
+        var viewHeight = view.bounds.height
+        if #available(iOS 11.0, *) { viewHeight -= view.safeAreaInsets.bottom + view.safeAreaInsets.top }
+        return contentHeight - viewHeight
     }
     
 }

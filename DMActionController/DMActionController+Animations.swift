@@ -59,7 +59,6 @@ extension DMActionController: UIViewControllerAnimatedTransitioning, UIViewContr
             animations: {
                 actionController.view.backgroundColor = isPresenting ? UIColor(white: 0, alpha: 0.5) : .clear
                 actionController.containerView.transform = isPresenting ? .identity : dismissedTransform
-                actionController.bottomView.transform = .identity
         }, completion: { _ in
             if !isPresenting { actionController.view.removeFromSuperview() }
             transitionContext.completeTransition(true)
