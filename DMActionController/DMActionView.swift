@@ -55,7 +55,7 @@ class DMActionView: UIStackView {
         imageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
         imageView.backgroundColor = color
         
-        titleLabel.textAlignment = .left
+        titleLabel.textAlignment = .natural
         titleLabel.numberOfLines = 1
         
         addArrangedSubview(imageView)
