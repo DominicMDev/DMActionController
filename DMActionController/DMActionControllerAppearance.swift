@@ -14,6 +14,7 @@ public class DMActionControllerAppearance {
     internal static let shared = DMActionControllerAppearance()
     
     // MARK: - NavBar
+    
     private let __titleTextAttributes: [NSAttributedString.Key : Any] = [
         .font: UIFont.systemFont(ofSize: 17, weight: .medium),
         .foregroundColor: UIColor.firstLabel
@@ -53,7 +54,7 @@ public class DMActionControllerAppearance {
         }
     }
     
-    // MARK: - Content Color
+    // MARK: - Content
     
     private var _backgroundColor: UIColor? = .fill
     

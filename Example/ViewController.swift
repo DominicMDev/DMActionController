@@ -120,3 +120,16 @@ class ViewController: UIViewController {
     
 }
 
+extension UIColor {
+    
+    func printRGB(_ name: String = "Unknown") {
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        if self.getRed(&r, green: &g, blue: &b, alpha: &a) {
+            print("<UIColor: '\(name)'; red = \(r); green = \(g); blue = \(b); alpha = \(a)>")
+        } else {
+            print("<UIColor: \(name); unable to get RGB values>")
+        }
+    }
+    
+}
+
