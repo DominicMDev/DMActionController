@@ -222,9 +222,9 @@ internal extension UIColor {
     
     static var fill: UIColor {
         if #available(iOS 13.0, *) {
-            return .secondarySystemBackground
+            return .secondarySystemGroupedBackground
         } else {
-            return UIColor(red: 242/255, green: 242/255, blue: 247/255, alpha: 1)
+            return .white
         }
     }
     
